@@ -348,7 +348,79 @@
                 font-size: 9px;
             }
         }
-    </style>
+         @font-face {
+    font-display: block;
+    font-family: Roboto;
+    src: url(https://assets.brevo.com/font/Roboto/Latin/normal/normal/7529907e9eaf8ebb5220c5f9850e3811.woff2) format("woff2");
+  }
+
+  #sib-container input::placeholder {
+    color: #787979;
+  }
+
+  #sib-container a {
+    color: #ff6666;
+    text-decoration: underline;
+  }
+
+  .newsletter .sib-form {
+    background: transparent !important;
+    text-align: center;
+  }
+
+  .newsletter #sib-container {
+    max-width: 540px;
+    width: 100%;
+    margin: 25px auto;
+    background: #171717 !important;
+    border: 0 !important;
+    border-radius: 6px !important;
+  }
+
+  .newsletter #sib-container input[type="text"] {
+    width: 100%;
+    border-radius: 4px;
+  }
+
+  .newsletter #sib-container button {
+    background: #c73535 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 4px !important;
+    padding: 14px 28px;
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center !important;
+  }
+
+  .newsletter #sib-container button:hover {
+    background: #a51f1f !important;
+  }
+
+  .newsletter .sib-form-message-panel {
+    max-width: 540px;
+    margin: 15px auto;
+  }
+
+  .newsletter .entry__choice {
+    text-align: left;
+  }
+
+  .newsletter .entry__choice p {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 600px) {
+    .newsletter #sib-container {
+      padding: 12px !important;
+    }
+  }
+</style>
+
+<link rel="stylesheet"
+href="https://sibforms.com/forms/end-form/build/sib-styles.css">
+
 </head>
 
 <body>
@@ -534,16 +606,143 @@
             </aside>
         </section>
 
-        <section class="newsletter">
-            <h2>Resta informato.</h2>
-            <p>Il mondo non si ferma. Non farlo nemmeno tu.</p>
-            <form onsubmit="event.preventDefault(); alert('Newsletter dimostrativa: configura un servizio di iscrizione per ricevere le email.');">
-                <input type="email" placeholder="La tua email" required>
-                <button type="submit">ISCRIVITI</button>
-            </form>
-        </section>
+       
+<section class="newsletter">
 
+  <h2>Resta informato.</h2>
+  <p>Il mondo non si ferma. Non farlo nemmeno tu.</p>
+
+  <div class="sib-form">
+
+    <div id="sib-form-container">
+
+      <!-- MESSAGGIO DI ERRORE -->
+      <div id="error-message" class="sib-form-message-panel">
+        <div class="sib-form-message-panel__text">
+          <span>La tua iscrizione non può essere convalidata.</span>
+        </div>
+      </div>
+
+      <!-- MESSAGGIO DI SUCCESSO -->
+      <div id="success-message" class="sib-form-message-panel">
+        <div class="sib-form-message-panel__text">
+          <span>La tua iscrizione è avvenuta correttamente.</span>
+        </div>
+      </div>
+
+      <div id="sib-container"
+           class="sib-container--large sib-container--vertical">
+
+        <form id="sib-form"
+              method="POST"
+              action="https://28578dc3.sibforms.com/serve/MUIFAB8w4gf5-8xC8kUFzQclbjxDYjnIO2bT0d8VN5ojLovH6crftrYLYawVwJHzAM-yJYWa4VO-qkhVqVIEf_8AFrF_48B9wNOjFRInkZiABgc_RBoWTpHAIAv3azYi8I9eww0ltvhcMxRSQ4sOSUc8AUBfL1d-Njfba5EbNIp4knfpEFEMoJTFV3EP9yS6r466OYnhv8egU48d0A=="
+              data-type="subscription">
+
+          <!-- CAMPO EMAIL -->
+          <div class="sib-input sib-form-block">
+            <div class="form__entry entry_block">
+
+              <div class="form__label-row">
+
+                <label class="entry__label"
+                       for="EMAIL"
+                       data-required="*">
+                  Iscriviti alla nostra newsletter
+                </label>
+
+                <div class="entry__field">
+                  <input
+                    class="input"
+                    type="email"
+                    id="EMAIL"
+                    name="EMAIL"
+                    autocomplete="email"
+                    placeholder="La tua email"
+                    data-required="true"
+                    required
+                  />
+                </div>
+
+              </div>
+
+              <label class="entry__error entry__error--primary"></label>
+
+            </div>
+          </div>
+
+          <!-- CONSENSO PRIVACY -->
+          <div class="sib-optin sib-form-block">
+            <div class="form__entry entry_mcq">
+
+              <div class="form__label-row">
+                <div class="entry__choice">
+
+                  <label>
+                    <input
+                      type="checkbox"
+                      class="input_replaced"
+                      value="1"
+                      id="CONSENSO_NEWSLETTER"
+                      name="CONSENSO_NEWSLETTER"
+                      required
+                    />
+
+                    <span class="checkbox checkbox_tick_positive"></span>
+
+                    <span>
+                      <p>
+                        Acconsento a ricevere via email la newsletter
+                        de L’INTERVALLO e dichiaro di aver letto
+                        <a href="privacy.html" target="_blank"
+                           rel="noopener noreferrer">
+                          l'informativa sulla privacy
+                        </a>.
+                        Posso annullare l'iscrizione in qualsiasi momento.
+                      </p>
+                    </span>
+
+                  </label>
+
+                </div>
+              </div>
+
+              <label class="entry__error entry__error--primary"></label>
+
+            </div>
+          </div>
+
+          <!-- PULSANTE -->
+          <div class="sib-form-block">
+            <button
+              class="sib-form-block__button sib-form-block__button-with-loader"
+              form="sib-form"
+              type="submit">
+
+              <svg class="icon clickable__icon progress-indicator__icon sib-hide-loader-icon"
+                   viewBox="0 0 512 512">
+                <path d="M460.116 373.846l-20.823-12.022c-5.541-3.199-7.54-10.159-4.663-15.874 30.137-59.886 28.343-131.652-5.386-189.946-33.641-58.394-94.896-95.833-161.827-99.676C261.028 55.961 256 50.751 256 44.352V20.309c0-6.904 5.808-12.337 12.703-11.982 83.556 4.306 160.163 50.864 202.11 123.677 42.063 72.696 44.079 162.316 6.031 236.832-3.14 6.148-10.75 8.461-16.728 5.01z"/>
+              </svg>
+
+              ISCRIVITI
+
+            </button>
+          </div>
+
+          <!-- CAMPI TECNICI BREVO -->
+          <input type="text"
+                 name="email_address_check"
+                 value=""
+                 class="input--hidden">
+
+          <input type="hidden" name="locale" value="it">
+
+        </form>
+
+      </div>
     </div>
+  </div>
+
+</section>
 
     <footer>
         <div class="logo">L'INTERVALLO</div>
