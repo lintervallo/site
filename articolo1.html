@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Titolo della pagina -->
+    <title>Il futuro dell'informazione | L'Intervallo</title>
+
+    <!-- Font del giornale -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f5f4f1;
+            color: #171717;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        /* TESTATA */
+        header {
+            text-align: center;
+            padding: 30px 15px;
+            border-bottom: 2px solid #171717;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 55px;
+            font-weight: 800;
+            color: #171717;
+            text-decoration: none;
+            letter-spacing: -3px;
+        }
+
+        /* MENU */
+        nav {
+            text-align: center;
+            padding: 18px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #171717;
+            font-size: 12px;
+            font-weight: 700;
+            margin: 0 15px;
+            text-transform: uppercase;
+        }
+
+        /* CONTENUTO ARTICOLO */
+        .article-container {
+            max-width: 850px;
+            margin: 55px auto;
+            padding: 0 25px;
+        }
+
+        .back {
+            color: #c73535;
+            font-size: 13px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .category {
+            color: #c73535;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-top: 35px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(35px, 6vw, 55px);
+            line-height: 1.15;
+            margin: 15px 0;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .author {
+            font-size: 12px;
+            color: #777;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 20px;
+        }
+
+        /* IMMAGINE PRINCIPALE */
+        .article-image {
+            width: 100%;
+            margin: 30px 0;
+            display: block;
+        }
+
+        /* TESTO */
+        .article-text {
+            font-size: 17px;
+            line-height: 1.9;
+            color: #333;
+        }
+
+        .article-text h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            margin: 35px 0 15px;
+        }
+
+        .article-text p {
+            margin-bottom: 22px;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #171717;
+            color: white;
+            text-align: center;
+            padding: 35px;
+            margin-top: 70px;
+        }
+
+        footer p {
+            color: #aaa;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        @media(max-width: 600px) {
+            .logo {
+                font-size: 40px;
+            }
+
+            nav a {
+                display: inline-block;
+                margin: 6px;
+            }
+
+            .article-text {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TESTATA -->
+    <header>
+        <a href="index.html" class="logo">L'INTERVALLO</a>
+    </header>
+
+    <!-- MENU -->
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="index.html#attualita">Attualità</a>
+        <a href="index.html#politica">Politica</a>
+        <a href="index.html#mondo">Mondo</a>
+        <a href="index.html#tecnologia">Tecnologia</a>
+        <a href="index.html#sport">Sport</a>
+        <a href="index.html#cultura">Cultura</a>
+    </nav>
+
+    <!-- ARTICOLO -->
+    <main class="article-container">
+
+        <!-- TORNA ALLA HOMEPAGE -->
+        <a href="index.html" class="back">
+            ← TORNA ALLA HOMEPAGE
+        </a>
+
+        <!-- CATEGORIA -->
+        <div class="category">ATTUALITÀ</div>
+
+        <!-- TITOLO -->
+        <h1>Informarsi nell'era delle notizie veloci</h1>
+
+        <!-- SOTTOTITOLO -->
+        <p class="subtitle">
+            In un mondo sempre connesso, distinguere le informazioni
+            affidabili diventa fondamentale.
+        </p>
+
+        <!-- AUTORE E DATA -->
+        <div class="author">
+            Di Redazione L'Intervallo · 10 novembre 2026
+        </div>
+
+        <!-- IMMAGINE -->
+        <img
+            class="article-image"
+            src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200"
+            alt="Giornali e informazione"
+        >
+
+        <!-- TESTO COMPLETO -->
+        <div class="article-text">
+
+            <p>
+                Viviamo in un periodo storico nel quale le informazioni
+                circolano a una velocità mai vista prima. Ogni giorno
+                milioni di notizie vengono pubblicate, condivise e
+                commentate attraverso piattaforme digitali.
+            </p>
+
+            <h2>La velocità dell'informazione</h2>
+
+            <p>
+                Internet ha rivoluzionato il modo in cui accediamo
+                alle notizie. Oggi possiamo conoscere gli avvenimenti
+                in tempo reale, seguendo ciò che accade in ogni parte
+                del mondo.
+            </p>
+
+            <p>
+                Questa possibilità porta con sé anche alcune
+                difficoltà: non tutte le informazioni che incontriamo
+                online sono corrette o complete.
+            </p>
+
+            <h2>L'importanza di verificare le fonti</h2>
+
+            <p>
+                Imparare a confrontare le fonti, leggere attentamente
+                gli articoli e distinguere i fatti dalle opinioni
+                rappresenta una competenza fondamentale.
+            </p>
+
+            <p>
+                Informarsi significa anche dedicare tempo alla
+                comprensione degli avvenimenti, senza fermarsi
+                necessariamente al primo titolo che incontriamo.
+            </p>
+
+            <h2>Una nuova responsabilità</h2>
+
+            <p>
+                Nell'era digitale, ogni lettore ha la possibilità
+                di contribuire alla diffusione di informazioni
+                affidabili. La consapevolezza rimane uno degli
+                strumenti più importanti per comprendere la realtà.
+            </p>
+
+        </div>
+
+    </main>
+
+    <!-- PIEDE DELLA PAGINA -->
+    <footer>
+        <div class="logo" style="color:white;">
+            L'INTERVALLO
+        </div>
+        <p>Le notizie, senza rumore.</p>
+        <p>© 2026 L'Intervallo · Tutti i diritti riservati</p>
+    </footer>
+
+</body>
+</html>
