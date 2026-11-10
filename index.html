@@ -432,7 +432,35 @@
 .newsletter #sib-container input[type="email"]:focus {
     color: #171717 !important;
     background-color: #ffffff !important;
-    outline: 2px solid #c73535;
+}
+        /* Riquadro nero più stretto */
+.newsletter {
+    max-width: 1000px;
+    width: calc(100% - 40px);
+    margin: 60px auto;
+    box-sizing: border-box;
+}
+
+/* Meno spazio tra il titolo e il modulo */
+.newsletter #sib-form {
+    margin-top: -55px !important;
+}
+
+/* Campo email: testo scuro e niente contorno rosso */
+.newsletter #sib-container input#EMAIL {
+    color: #171717 !important;
+    -webkit-text-fill-color: #171717 !important;
+    background: #ffffff !important;
+    caret-color: #171717 !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Niente cornice rossa quando il campo è selezionato */
+.newsletter #sib-container input#EMAIL:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: #cccccc !important;
 }
 </style>
 
