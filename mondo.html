@@ -1,0 +1,350 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mondo | L'INTERVALLO</title>
+    <meta name="description" content="Le notizie dal mondo, gli eventi internazionali e le storie che collegano i Paesi.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --black: #171717;
+            --red: #c73535;
+            --gray: #777;
+            --light: #f5f4f1;
+            --border: #deded9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--light);
+            color: var(--black);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .topbar {
+            background: var(--black);
+            color: white;
+            text-align: center;
+            padding: 9px 15px;
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 20px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(38px, 7vw, 58px);
+            font-weight: 800;
+            letter-spacing: -2px;
+        }
+
+        .tagline {
+            color: var(--gray);
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            background: var(--light);
+        }
+
+        nav a {
+            font-size: 13px;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: var(--red);
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 0 auto;
+            padding: 0 25px;
+        }
+
+        .breadcrumb {
+            font-size: 12px;
+            color: var(--gray);
+            margin: 35px 0 25px;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--red);
+        }
+
+        .category-header {
+            border-bottom: 2px solid var(--black);
+            padding-bottom: 25px;
+            margin-bottom: 35px;
+        }
+
+        .eyebrow {
+            color: var(--red);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(42px, 7vw, 65px);
+            margin-bottom: 10px;
+        }
+
+        .category-description {
+            color: var(--gray);
+            font-size: 15px;
+            max-width: 650px;
+            line-height: 1.6;
+        }
+
+        .section-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            padding-bottom: 70px;
+        }
+
+        .article-card {
+            background: white;
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .article-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.07);
+        }
+
+        .article-card img {
+            width: 100%;
+            height: 210px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .article-content {
+            padding: 20px;
+        }
+
+        .article-category {
+            color: var(--red);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .article-card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 21px;
+            line-height: 1.3;
+            margin-bottom: 10px;
+        }
+
+        .article-card p {
+            color: var(--gray);
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .read-more {
+            color: var(--red);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        footer {
+            background: #111;
+            color: white;
+            text-align: center;
+            padding: 35px 20px;
+            font-size: 12px;
+        }
+
+        footer .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 25px;
+            margin-bottom: 8px;
+        }
+
+        footer p {
+            color: #aaa;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 800px) {
+            .articles-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            nav {
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 550px) {
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 0 18px;
+            }
+
+            nav {
+                gap: 12px 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="topbar">
+        Informarsi, capire, guardare oltre
+    </div>
+
+    <header>
+        <a href="index.html">
+            <div class="logo">L'INTERVALLO</div>
+        </a>
+        <p class="tagline">Prenditi una pausa e guarda il mondo da vicino</p>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="attualita.html">Attualità</a>
+        <a href="politica.html">Politica</a>
+        <a href="mondo.html" class="active">Mondo</a>
+        <a href="tecnologia.html">Tecnologia</a>
+        <a href="sport.html">Sport</a>
+        <a href="cultura.html">Cultura</a>
+    </nav>
+
+    <main class="container">
+
+        <div class="breadcrumb">
+            <a href="index.html">Home</a> / Mondo
+        </div>
+
+        <section class="category-header">
+            <div class="eyebrow">Le nostre categorie</div>
+            <h1>Mondo</h1>
+            <p class="category-description">
+                Uno sguardo oltre i confini: eventi internazionali,
+                culture, società e storie che raccontano un mondo in continuo cambiamento.
+            </p>
+        </section>
+
+        <div class="section-info">
+            <span>LE NOTIZIE DAL MONDO</span>
+            <span id="article-count"></span>
+        </div>
+
+        <section class="articles-grid" id="articles-grid"></section>
+
+    </main>
+
+    <footer>
+        <div class="footer-logo">L'INTERVALLO</div>
+        <p>Prenditi una pausa e guarda il mondo da vicino.</p>
+        <p>© 2026 L'INTERVALLO — Tutti i diritti riservati.</p>
+    </footer>
+
+    <script>
+        const articles = [
+            {
+                category: "Internazionale",
+                title: "Un mondo sempre più connesso",
+                description: "Come la globalizzazione continua a trasformare le relazioni tra Paesi, economie e persone.",
+                image: "https://images.unsplash.com/photo-1521295121783-8a321d551ad2?w=700",
+                link: "#"
+            },
+            {
+                category: "Società",
+                title: "Culture diverse, sfide comuni",
+                description: "Le differenze culturali possono diventare un punto di incontro e un'occasione di crescita.",
+                image: "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=700",
+                link: "#"
+            },
+            {
+                category: "Attualità internazionale",
+                title: "Le grandi sfide del nostro pianeta",
+                description: "Ambiente, risorse e cooperazione internazionale: questioni che riguardano tutti.",
+                image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=700",
+                link: "#"
+            }
+        ];
+
+        const grid = document.getElementById("articles-grid");
+
+        articles.forEach(article => {
+            const card = document.createElement("article");
+            card.className = "article-card";
+
+            card.innerHTML = `
+                <a href="${article.link}">
+                    <img src="${article.image}" alt="${article.title}">
+                    <div class="article-content">
+                        <div class="article-category">${article.category}</div>
+                        <h2>${article.title}</h2>
+                        <p>${article.description}</p>
+                        <span class="read-more">Leggi l'articolo →</span>
+                    </div>
+                </a>
+            `;
+
+            grid.appendChild(card);
+        });
+
+        document.getElementById("article-count").textContent =
+            articles.length + " articoli";
+    </script>
+
+</body>
+</html>
