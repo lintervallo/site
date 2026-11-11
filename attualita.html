@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Tutte le notizie di Attualità de L'Intervallo.">
+    <meta name="description" content="Le notizie di politica nazionale e internazionale su L'Intervallo.">
     <title>Attualità | L'INTERVALLO</title>
 
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
@@ -224,15 +224,6 @@
             color: #921f1f;
         }
 
-        .empty-message {
-            background: white;
-            border: 1px solid var(--border);
-            padding: 35px;
-            text-align: center;
-            color: var(--gray);
-            grid-column: 1 / -1;
-        }
-
         footer {
             background: #111;
             color: white;
@@ -296,13 +287,12 @@
 
     <nav>
         <a href="index.html">Home</a>
-        <a href="attualita.html">Attualità</a>
-        <a href="politica.html">Politica</a>
+        <a href="attualita.html" class="active">Attualità</a>
+        <a href="politica.html" >Politica</a>
         <a href="mondo.html">Mondo</a>
         <a href="tecnologia.html">Tecnologia</a>
         <a href="sport.html">Sport</a>
         <a href="cultura.html">Cultura</a>
-      
     </nav>
 
     <main class="container">
@@ -315,19 +305,22 @@
             <div class="eyebrow">LE NOSTRE CATEGORIE</div>
             <h1>Attualità</h1>
             <p>
-                Le notizie, gli avvenimenti e i temi che caratterizzano
-                il nostro presente. Uno spazio per comprendere meglio
-                ciò che accade intorno a noi.
+                Istituzioni, decisioni pubbliche, governi e partecipazione
+                democratica. Uno spazio per comprendere le dinamiche
+                politiche italiane e internazionali, attraverso
+                informazione e approfondimento.
             </p>
         </section>
 
         <section>
+
             <div class="articles-info">
                 <h2>Tutti gli articoli</h2>
                 <span class="article-count" id="articleCount"></span>
             </div>
 
             <div class="news-grid" id="newsGrid"></div>
+
         </section>
 
     </main>
@@ -340,7 +333,9 @@
     </footer>
 
     <script>
-        // DATA E ORA
+
+        // DATA AUTOMATICA
+
         const today = new Date();
 
         document.getElementById("date").textContent =
@@ -351,39 +346,57 @@
                 year: "numeric"
             });
 
-        // ARTICOLI DELLA CATEGORIA
-        // Aggiungi qui gli articoli che vuoi mostrare.
+
+        // ARTICOLI DELLA CATEGORIA POLITICA
 
         const articles = [
+
             {
-                title: "Il mondo cambia in fretta, noi proviamo a raccontarlo.",
-                description: "Uno spazio di informazione e apprendimento dedicato alla comprensione del presente.",
-                image: "https://images.unsplash.com/photo-1495020689067-958852a7765e?w=700",
+                title: "Democrazia e partecipazione: il ruolo dei cittadini",
+                description: "La partecipazione pubblica è uno degli elementi fondamentali della vita democratica. Ma quali strumenti hanno i cittadini per prendere parte alle decisioni collettive?",
+                image: "https://images.unsplash.com/photo-1520869562399-e772f042f422?w=700",
                 date: "L'INTERVALLO",
-                readingTime: "3 MIN DI LETTURA",
-                link: "articolo1.html"
+                readingTime: "5 MIN DI LETTURA",
+                link: "#"
             },
+
             {
-                title: "Informarsi nell'era delle notizie veloci",
-                description: "In un mondo sempre connesso, distinguere le informazioni affidabili diventa fondamentale.",
-                image: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=700",
+                title: "Le sfide della politica contemporanea",
+                description: "Istituzioni, rappresentanza e trasformazioni sociali: uno sguardo sulle questioni che caratterizzano la politica di oggi.",
+                image: "https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=700",
+                date: "L'INTERVALLO",
+                readingTime: "5 MIN DI LETTURA",
+                link: "#"
+            },
+
+            {
+                title: "Giovani e politica: nuove forme di partecipazione",
+                description: "Dalle iniziative locali al dibattito online, le nuove generazioni trovano diversi modi per partecipare alla vita pubblica.",
+                image: "https://images.unsplash.com/photo-1529390079861-591de354faf5?w=700",
                 date: "L'INTERVALLO",
                 readingTime: "4 MIN DI LETTURA",
                 link: "#"
             }
+
         ];
 
-        // GENERAZIONE DELLE SCHEDE
+
+        // CREAZIONE AUTOMATICA DELLE SCHEDE
+
         const newsGrid = document.getElementById("newsGrid");
 
         document.getElementById("articleCount").textContent =
             articles.length + (articles.length === 1 ? " articolo" : " articoli");
 
         if (articles.length === 0) {
+
             newsGrid.innerHTML =
-                '<div class="empty-message">Non ci sono ancora articoli in questa categoria.</div>';
+                '<div style="background:white; padding:35px; text-align:center; color:#777; grid-column:1/-1;">Non ci sono ancora articoli in questa categoria.</div>';
+
         } else {
+
             articles.forEach(article => {
+
                 const card = document.createElement("article");
                 card.className = "news-card";
 
@@ -416,9 +429,13 @@
 
                 content.append(category, title, description, meta, link);
                 card.append(image, content);
+
                 newsGrid.appendChild(card);
+
             });
+
         }
+
     </script>
 
 </body>
