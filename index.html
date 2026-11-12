@@ -461,6 +461,9 @@
 <link rel="stylesheet"
 href="https://sibforms.com/forms/end-form/build/sib-styles.css">
 
+    
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 </head>
 
 <body>
@@ -813,6 +816,78 @@ href="https://sibforms.com/forms/end-form/build/sib-styles.css">
             });
         });
     </script>
+
+<script>
+    // COLLEGAMENTO A SUPABASE
+
+    const SUPABASE_URL = "https://yfxlfajooflleztnnsxl.supabase.co/rest/v1/";
+    const SUPABASE_KEY = "sb_publishable_mCQoLQm_2fa9cA6GpmO53A_SpSpaN87";
+
+    const supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+    console.log("Collegamento a Supabase preparato!");
+    
+// CARICAMENTO AUTOMATICO DEGLI ARTICOLI
+
+async function caricaArticoli() {
+    const newsGrid = document.getElementById("newsGrid");
+
+    const { data: articoli, error } = await supabaseClient
+        .from("articoli")
+        .select("*")
+        .eq("pubblicato", true);
+
+    if (error) {
+        console.error("Errore nel caricamento:", error);
+        newsGrid.textContent = "Impossibile caricare le notizie.";
+        return;
+    }
+
+    newsGrid.replaceChildren();
+
+    if (!articoli || articoli.length === 0) {
+        newsGrid.textContent = "Non ci sono ancora articoli pubblicati.";
+        return;
+    }
+
+    articoli.forEach(articolo => {
+        const card = document.createElement("article");
+        card.className = "news-card";
+
+        const img = document.createElement("img");
+        img.src = articolo.immagine || "";
+        img.alt = articolo.titolo || "Immagine articolo";
+
+        const content = document.createElement("div");
+        content.className = "news-content";
+
+        const category = document.createElement("div");
+        category.className = "category";
+        category.textContent = articolo.categoria || "Attualità";
+
+        const title = document.createElement("h3");
+        title.textContent = articolo.titolo || "Senza titolo";
+
+        const description = document.createElement("p");
+        description.textContent = articolo.descrizione || "";
+
+        const link = document.createElement("a");
+        link.href = "#";
+        link.className = "read-more";
+        link.textContent = "Leggi l'articolo →";
+
+        content.append(category, title, description, link);
+        card.append(img, content);
+        newsGrid.appendChild(card);
+    });
+}
+
+caricaArticoli();
+
+</script>
 
 </body>
 </html>
