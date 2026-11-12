@@ -265,97 +265,104 @@
             SUPABASE_KEY
         );
 
-        // CARICAMENTO ARTICOLO
+        
+// CARICAMENTO ARTICOLO
 
-        async function caricaArticolo() {
+async function caricaArticolo() {
 
-            const contenitore = document.getElementById("articolo");
+    const contenitore = document.getElementById("articolo");
 
-            const parametri = new URLSearchParams(
-                window.location.search
-            );
+    const parametri = new URLSearchParams(
+        window.location.search
+    );
 
-            const id = parametri.get("id");
+    const id = parametri.get("id");
 
-            if (!id || !/^\d+$/.test(id)) {
-                contenitore.textContent = "Articolo non trovato.";
-                return;
-            }
+    if (!id || !/^\d+$/.test(id)) {
+        contenitore.textContent = "Articolo non trovato.";
+        return;
+    }
 
-            const { data, error } = await supabaseClient
-                .from("articoli")
-                .select("*")
-                .eq("id", id)
-                .eq("pubblicato", true)
-                .single();
+    const { data, error } = await supabaseClient
+        .from("articoli")
+        .select("*")
+        .eq("id", id)
+        .eq("pubblicato", true)
+        .single();
 
-            if (error || !data) {
-                console.error(error);
-                contenitore.textContent =
-                    "Impossibile trovare questo articolo.";
-                return;
-            }
+    if (error || !data) {
+        console.error(error);
+        contenitore.textContent =
+            "Impossibile trovare questo articolo.";
+        return;
+    }
 
-            // CATEGORIA
+    // CATEGORIA
 
-            const categoria = document.createElement("div");
-            categoria.className = "category";
-            categoria.textContent = data.categoria;
+    const categoria = document.createElement("div");
+    categoria.className = "category";
+    categoria.textContent = data.categoria;
 
-            // TITOLO
+    // TITOLO
 
-            const titolo = document.createElement("h1");
-            titolo.className = "article-title";
-            titolo.textContent = data.titolo;
+    const titolo = document.createElement("h1");
+    titolo.className = "article-title";
+    titolo.textContent = data.titolo;
 
-            // DESCRIZIONE
+    // DESCRIZIONE
 
-            const descrizione = document.createElement("p");
-            descrizione.className = "description";
-            descrizione.textContent = data.descrizione || "";
+    const descrizione = document.createElement("p");
+    descrizione.className = "description";
+    descrizione.textContent = data.descrizione || "";
 
-            // DATA
-            const dataArticolo = new Date(
-                data.data_pubblicazione
-            ).toLocaleDateString("it-IT", {
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-            });
+    // DATA E AUTORE
 
-            meta.textContent = dataArticolo;
-            if (data.autore && data.autore.trim()) {
-                meta.textContent += " · " + data.autore.trim();
-            }
-            contenitore.replaceChildren(
-                categoria,
-                titolo,
-                descrizione,
-                meta
-            );
+    const meta = document.createElement("div");
+    meta.className = "meta";
 
-            // IMMAGINE
+    const dataArticolo = new Date(
+        data.data_pubblicazione
+    ).toLocaleDateString("it-IT", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    });
 
-            if (data.immagine) {
-                const immagine = document.createElement("img");
-                immagine.className = "article-image";
-                immagine.src = data.immagine;
-                immagine.alt = data.titolo;
+    meta.textContent = dataArticolo;
 
-                contenitore.appendChild(immagine);
-            }
+    if (data.autore && data.autore.trim()) {
+        meta.textContent += " · " + data.autore.trim();
+    }
 
-            // CONTENUTO COMPLETO
+    contenitore.replaceChildren(
+        categoria,
+        titolo,
+        descrizione,
+        meta
+    );
 
-            const testo = document.createElement("div");
-            testo.className = "article-content";
-            testo.textContent = data.contenuto;
+    // IMMAGINE
 
-            contenitore.appendChild(testo);
+    if (data.immagine) {
+        const immagine = document.createElement("img");
+        immagine.className = "article-image";
+        immagine.src = data.immagine;
+        immagine.alt = data.titolo;
 
-            document.title =
-                data.titolo + " | L'INTERVALLO";
-        }
+        contenitore.appendChild(immagine);
+    }
+
+    // CONTENUTO COMPLETO
+
+    const testo = document.createElement("div");
+    testo.className = "article-content";
+    testo.textContent = data.contenuto;
+
+    contenitore.appendChild(testo);
+
+    document.title =
+        data.titolo + " | L'INTERVALLO";
+}
 
         caricaArticolo();
     </script>
