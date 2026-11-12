@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="L'Intervallo - Le notizie, senza rumore.">
     <title>Articolo | L'INTERVALLO</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -19,205 +19,348 @@
         }
 
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
         body {
-            margin: 0;
             background: var(--light);
             color: var(--black);
             font-family: 'DM Sans', sans-serif;
         }
 
-        header {
-            background: var(--black);
-            color: white;
-            text-align: center;
-            padding: 28px 20px;
-        }
-
-        header a {
-            color: white;
+        a {
+            color: inherit;
             text-decoration: none;
         }
 
-        header h1 {
+        .topbar {
+            background: var(--black);
+            color: white;
+            padding: 9px 7%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        header {
+            text-align: center;
+            padding: 28px 15px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
             font-family: 'Playfair Display', serif;
-            font-size: 42px;
-            margin: 0;
-            letter-spacing: 2px;
+            font-size: clamp(42px, 8vw, 76px);
+            font-weight: 800;
+            letter-spacing: -4px;
         }
 
-        header p {
-            color: #ccc;
-            margin: 5px 0 0;
+        .subtitle {
+            font-size: 11px;
+            letter-spacing: 4px;
+            color: var(--gray);
+            margin-top: 5px;
+            text-transform: uppercase;
         }
 
-        main {
-            max-width: 850px;
-            margin: 55px auto;
-            padding: 0 22px;
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            padding: 17px;
+            border-bottom: 2px solid var(--black);
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: color .2s;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: var(--red);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 45px auto;
+            padding: 0 25px;
         }
 
         .back {
+            display: inline-block;
             color: var(--red);
-            text-decoration: none;
-            font-weight: 700;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 35px;
         }
 
         .category {
             color: var(--red);
-            font-weight: 700;
+            font-size: 12px;
+            font-weight: 800;
             text-transform: uppercase;
-            margin-top: 35px;
-            font-size: 13px;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
         }
 
-        h2 {
+        .article-title {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(34px, 6vw, 54px);
-            line-height: 1.15;
-            margin: 12px 0;
+            font-size: clamp(35px, 6vw, 58px);
+            line-height: 1.12;
+            margin-bottom: 20px;
         }
 
         .description {
             color: var(--gray);
             font-size: 19px;
-            line-height: 1.6;
+            line-height: 1.7;
+            max-width: 800px;
         }
 
-        .date {
+        .meta {
             color: var(--gray);
-            font-size: 13px;
-            margin: 20px 0;
+            font-size: 11px;
+            margin: 22px 0;
+            text-transform: uppercase;
+            letter-spacing: .5px;
         }
 
         .article-image {
             width: 100%;
-            max-height: 480px;
+            max-height: 520px;
             object-fit: cover;
-            border-radius: 4px;
-            margin: 15px 0 30px;
+            margin: 10px 0 35px;
         }
 
-        .content {
-            font-size: 18px;
+        .article-content {
+            max-width: 760px;
+            margin: 0 auto;
+            font-size: 17px;
             line-height: 1.9;
             white-space: pre-wrap;
         }
 
-        footer {
-            background: var(--black);
-            color: white;
+        .error {
             text-align: center;
-            padding: 30px;
-            margin-top: 80px;
+            padding: 70px 20px;
+            font-family: 'Playfair Display', serif;
+            font-size: 25px;
         }
 
-        #errore {
+        footer {
+            background: #111;
+            color: white;
+            padding: 35px 7%;
             text-align: center;
-            padding: 60px 10px;
+            margin-top: 70px;
+        }
+
+        footer .logo {
+            font-size: 40px;
+        }
+
+        footer p {
+            color: #999;
+            font-size: 11px;
+            margin-top: 12px;
+        }
+
+        @media(max-width: 750px) {
+            nav {
+                gap: 15px;
+            }
+
+            .topbar {
+                font-size: 9px;
+            }
+
+            .container {
+                margin-top: 30px;
+            }
+
+            .description {
+                font-size: 16px;
+            }
+
+            .article-content {
+                font-size: 16px;
+            }
         }
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
 
-<header>
-    <a href="index.html">
-        <h1>L'INTERVALLO</h1>
-        <p>Prenditi una pausa e guarda il mondo da vicino</p>
-    </a>
-</header>
-
-<main>
-    <a href="index.html" class="back">← Torna alla homepage</a>
-
-    <div id="articolo">
-        <p>Caricamento articolo...</p>
+    <div class="topbar">
+        <span>IL GIORNALE DIGITALE INDIPENDENTE</span>
+        <span id="date"></span>
     </div>
-</main>
 
-<footer>
-    © 2026 L'INTERVALLO — Tutti i diritti riservati
-</footer>
+    <header>
+        <a href="index.html" class="logo">L'INTERVALLO</a>
+        <div class="subtitle">
+            Prenditi una pausa e guarda il mondo da vicino
+        </div>
+    </header>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="attualita.html">Attualità</a>
+        <a href="politica.html">Politica</a>
+        <a href="mondo.html">Mondo</a>
+        <a href="tecnologia.html">Tecnologia</a>
+        <a href="cultura.html">Cultura</a>
+    </nav>
 
-<script>
-    const SUPABASE_URL = "https://yfxlfajooflleztnnsxl.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_mCQoLQm_2fa9cA6GpmO53A_SpSpaN87";
+    <main class="container">
 
-    const supabaseClient = window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
+        <a href="index.html" class="back">
+            ← Torna alle notizie
+        </a>
 
-    async function caricaArticolo() {
-        const contenitore = document.getElementById("articolo");
+        <article id="articolo">
+            <p>Caricamento articolo...</p>
+        </article>
 
-        const parametri = new URLSearchParams(window.location.search);
-        const id = parametri.get("id");
+    </main>
 
-        if (!id || !/^\d+$/.test(id)) {
-            contenitore.textContent = "Articolo non trovato.";
-            return;
-        }
+    <footer>
+        <div class="logo">L'INTERVALLO</div>
+        <p>Le notizie, senza rumore.</p>
+        <p>© 2026 L'Intervallo · Tutti i diritti riservati</p>
+        <p>Un progetto editoriale indipendente.</p>
+    </footer>
 
-        const { data, error } = await supabaseClient
-            .from("articoli")
-            .select("*")
-            .eq("id", id)
-            .eq("pubblicato", true)
-            .single();
+    <script>
+        // DATA AUTOMATICA
 
-        if (error || !data) {
-            contenitore.textContent = "Impossibile trovare questo articolo.";
-            console.error(error);
-            return;
-        }
+        const today = new Date();
 
-        const categoria = document.createElement("div");
-        categoria.className = "category";
-        categoria.textContent = data.categoria;
+        document.getElementById("date").textContent =
+            today.toLocaleDateString("it-IT", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            });
 
-        const titolo = document.createElement("h2");
-        titolo.textContent = data.titolo;
+        // SUPABASE
 
-        const descrizione = document.createElement("p");
-        descrizione.className = "description";
-        descrizione.textContent = data.descrizione || "";
+        const SUPABASE_URL = "https://yfxlfajooflleztnnsxl.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_mCQoLQm_2fa9cA6GpmO53A_SpSpaN87";
 
-        const dataPubblicazione = document.createElement("p");
-        dataPubblicazione.className = "date";
-        dataPubblicazione.textContent = new Date(
-            data.data_pubblicazione
-        ).toLocaleDateString("it-IT");
-
-        contenitore.replaceChildren(
-            categoria,
-            titolo,
-            descrizione,
-            dataPubblicazione
+        const supabaseClient = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
         );
 
-        if (data.immagine) {
-            const immagine = document.createElement("img");
-            immagine.className = "article-image";
-            immagine.src = data.immagine;
-            immagine.alt = data.titolo;
-            contenitore.appendChild(immagine);
+        // CARICAMENTO ARTICOLO
+
+        async function caricaArticolo() {
+
+            const contenitore = document.getElementById("articolo");
+
+            const parametri = new URLSearchParams(
+                window.location.search
+            );
+
+            const id = parametri.get("id");
+
+            if (!id || !/^\d+$/.test(id)) {
+                contenitore.textContent = "Articolo non trovato.";
+                return;
+            }
+
+            const { data, error } = await supabaseClient
+                .from("articoli")
+                .select("*")
+                .eq("id", id)
+                .eq("pubblicato", true)
+                .single();
+
+            if (error || !data) {
+                console.error(error);
+                contenitore.textContent =
+                    "Impossibile trovare questo articolo.";
+                return;
+            }
+
+            // CATEGORIA
+
+            const categoria = document.createElement("div");
+            categoria.className = "category";
+            categoria.textContent = data.categoria;
+
+            // TITOLO
+
+            const titolo = document.createElement("h1");
+            titolo.className = "article-title";
+            titolo.textContent = data.titolo;
+
+            // DESCRIZIONE
+
+            const descrizione = document.createElement("p");
+            descrizione.className = "description";
+            descrizione.textContent = data.descrizione || "";
+
+            // DATA
+
+            const meta = document.createElement("div");
+            meta.className = "meta";
+
+            const dataArticolo = new Date(
+                data.data_pubblicazione
+            ).toLocaleDateString("it-IT", {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            });
+
+            meta.textContent =
+                "REDAZIONE L'INTERVALLO · " + dataArticolo;
+
+            contenitore.replaceChildren(
+                categoria,
+                titolo,
+                descrizione,
+                meta
+            );
+
+            // IMMAGINE
+
+            if (data.immagine) {
+                const immagine = document.createElement("img");
+                immagine.className = "article-image";
+                immagine.src = data.immagine;
+                immagine.alt = data.titolo;
+
+                contenitore.appendChild(immagine);
+            }
+
+            // CONTENUTO COMPLETO
+
+            const testo = document.createElement("div");
+            testo.className = "article-content";
+            testo.textContent = data.contenuto;
+
+            contenitore.appendChild(testo);
+
+            document.title =
+                data.titolo + " | L'INTERVALLO";
         }
 
-        const testo = document.createElement("div");
-        testo.className = "content";
-        testo.textContent = data.contenuto;
-
-        contenitore.appendChild(testo);
-    }
-
-    caricaArticolo();
-</script>
+        caricaArticolo();
+    </script>
 
 </body>
 </html>
