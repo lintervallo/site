@@ -560,21 +560,37 @@
     data_pubblicazione: pubblicato ? new Date().toISOString() : null
 };
 
+          // Se questo articolo va in evidenza, togli il contrassegno agli altri
+          if (articolo.in_evidenza) {
+              let query = supabaseClient
+                  .from("articoli")
+                  .update({ in_evidenza: false })
+                  .eq("in_evidenza", true);
+          
+        // Se stiamo modificando un articolo, non tocchiamo quello stesso articolo
+              if (articoloInModifica !== null) {
+                  query = query.neq("id", articoloInModifica);
+              }
+              
+              const { error: erroreEvidenza } = await query;
+              if (erroreEvidenza) throw erroreEvidenza;
+          }
+
+       // Salva o aggiorna l'articolo
             if (articoloInModifica !== null) {
                 const { error } = await supabaseClient
                     .from("articoli")
                     .update(articolo)
                     .eq("id", articoloInModifica);
-
                 if (error) throw error;
             } else {
                 const { error } = await supabaseClient
                     .from("articoli")
                     .insert([articolo]);
-
+                
                 if (error) throw error;
             }
-
+            
             mostraMessaggio(pubblicato ? "Articolo pubblicato!" : "Bozza salvata!");
             articleForm.reset();
             resetModifica();
