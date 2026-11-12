@@ -517,15 +517,20 @@ async function caricaPolitica() {
         .order("data_pubblicazione", { ascending: false });
 
     if (error) {
-        console.error("Errore Supabase:", error);
+    console.error("Errore Supabase:", error);
 
-        document.getElementById("internalGrid").textContent =
-            "Errore nel caricamento degli articoli.";
+    alert(
+        "Errore Supabase: " +
+        error.message +
+        "\nCodice: " +
+        (error.code || "nessuno")
+    );
 
-        document.getElementById("internationalGrid").textContent =
-            "Errore nel caricamento degli articoli.";
-
-        return;
+    document.getElementById("internalGrid").textContent =
+        "Errore nel caricamento degli articoli.";
+    document.getElementById("internationalGrid").textContent =
+        "Errore nel caricamento degli articoli.";
+    return;
     }
 
     // NORMALIZZA LE SOTTOCATEGORIE
