@@ -412,9 +412,9 @@
         bottone.disabled = false;
 
         if (error) {
-            mostraLoginMessaggio("Accesso non riuscito. Controlla email e password.");
-            console.error(error);
-            return;
+    mostraLoginMessaggio("Errore Supabase: " + error.message);
+    console.error(error);
+    return;
         }
 
         sessioneUtente = data.session;
