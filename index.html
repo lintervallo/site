@@ -832,6 +832,7 @@ href="https://sibforms.com/forms/end-form/build/sib-styles.css">
     
 // CARICAMENTO AUTOMATICO DEGLI ARTICOLI
 
+
 async function caricaArticoli() {
     const newsGrid = document.getElementById("newsGrid");
 
@@ -840,21 +841,20 @@ async function caricaArticoli() {
         .select("*")
         .eq("pubblicato", true);
 
-   if (error) {
-    console.error("Errore nel caricamento:", error);
+    if (error) {
+        console.error("Errore nel caricamento:", error);
 
-    alert(
-        "Errore Supabase:\n" +
-        error.message +
-        "\nDettagli: " +
-        (error.details || "") +
-        "\nCodice: " +
-        (error.code || "")
-    );
+        alert(
+            "Errore Supabase:\n" +
+            error.message +
+            "\nDettagli: " +
+            (error.details || "") +
+            "\nCodice: " +
+            (error.code || "")
+        );
 
-    newsGrid.textContent = "Impossibile caricare le notizie.";
-    return;
-}
+        newsGrid.textContent = "Impossibile caricare le notizie.";
+        return;
     }
 
     newsGrid.replaceChildren();
