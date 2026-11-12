@@ -291,6 +291,15 @@
                     id="autore"
                     placeholder="Es. Mario Rossi"
                 />
+                <div class="form-group">
+                    <label>
+                        <input
+                            type="checkbox"
+                            id="inEvidenza"
+                            >
+                        Metti questo articolo in evidenza nella homepage
+                    </label>
+                </div>
 
                 <label for="descrizione">Descrizione breve</label>
                 <textarea id="descrizione" maxlength="400" required></textarea>
@@ -541,6 +550,7 @@
         const articolo = {
     titolo: document.getElementById("titolo").value.trim(),
     autore: document.getElementById("autore").value.trim() || null,
+    in_evidenza: document.getElementById("inEvidenza").checked,
     descrizione: document.getElementById("descrizione").value.trim(),
     categoria: document.getElementById("categoria").value,
     sottocategoria: document.getElementById("sottocategoria").value.trim() || null,
