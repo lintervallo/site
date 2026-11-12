@@ -391,162 +391,183 @@
 
     <script>
 
-        // DATA AUTOMATICA
+// DATA AUTOMATICA
 
-        const today = new Date();
+const today = new Date();
 
-        document.getElementById("date").textContent =
-            today.toLocaleDateString("it-IT", {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-            });
-
-
-        // ARTICOLI DI POLITICA INTERNA
-
-        const internalArticles = [
-
-            {
-                title: "Democrazia e partecipazione: il ruolo dei cittadini",
-                description: "La partecipazione pubblica è uno degli elementi fondamentali della vita democratica. Ma quali strumenti hanno i cittadini per prendere parte alle decisioni collettive?",
-                image: "https://images.unsplash.com/photo-1520869562399-e772f042f422?w=700",
-                date: "L'INTERVALLO",
-                readingTime: "5 MIN DI LETTURA",
-                link: "#"
-            },
-
-            {
-                title: "Le sfide della politica contemporanea",
-                description: "Istituzioni, rappresentanza e trasformazioni sociali: uno sguardo sulle questioni che caratterizzano la politica di oggi.",
-                image: "https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=700",
-                date: "L'INTERVALLO",
-                readingTime: "5 MIN DI LETTURA",
-                link: "#"
-            },
-
-            {
-                title: "Giovani e politica: nuove forme di partecipazione",
-                description: "Dalle iniziative locali al dibattito online, le nuove generazioni trovano diversi modi per partecipare alla vita pubblica.",
-                image: "https://images.unsplash.com/photo-1529390079861-591de354faf5?w=700",
-                date: "L'INTERVALLO",
-                readingTime: "4 MIN DI LETTURA",
-                link: "#"
-            }
-
-        ];
+document.getElementById("date").textContent =
+    today.toLocaleDateString("it-IT", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    });
 
 
-        // ARTICOLI DI POLITICA INTERNAZIONALE
+// COLLEGAMENTO A SUPABASE
 
-        const internationalArticles = [
+const SUPABASE_URL = "https://yfxlfajooflleztnnsxl.supabase.co";
 
-            {
-                title: "Gli equilibri internazionali in un mondo che cambia",
-                description: "Le relazioni tra gli Stati stanno attraversando una fase di trasformazione. Quali sono le nuove sfide della diplomazia?",
-                image: "https://images.unsplash.com/photo-1526470608268-f674ce90ebd4?w=700",
-                date: "L'INTERVALLO",
-                readingTime: "6 MIN DI LETTURA",
-                link: "#"
-            },
+// Usa la stessa publishable key già presente in index.html
+const SUPABASE_KEY = "INCOLLA_LA_TUA_STESSA_PUBLISHABLE_KEY";
 
-            {
-                title: "L'Unione Europea e le sfide del futuro",
-                description: "Economia, sicurezza e cooperazione: le questioni che attendono i Paesi membri dell'Unione Europea.",
-                image: "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=700",
-                date: "L'INTERVALLO",
-                readingTime: "5 MIN DI LETTURA",
-                link: "#"
-            },
-
-            {
-                title: "Diplomazia e cooperazione tra le nazioni",
-                description: "Il dialogo internazionale resta uno strumento fondamentale per affrontare le questioni globali e costruire accordi tra gli Stati.",
-                image: "https://images.unsplash.com/photo-1521295121783-8a321d551ad2?w=700",
-                date: "L'INTERVALLO",
-                readingTime: "4 MIN DI LETTURA",
-                link: "#"
-            }
-
-        ];
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
 
 
-        // FUNZIONE PER CREARE LE SCHEDE
+// FORMATTAZIONE DATA
 
-        function renderArticles(articles, gridId, countId, categoryName) {
+function formattaData(data) {
+    if (!data) return "";
 
-            const grid = document.getElementById(gridId);
-            const count = document.getElementById(countId);
+    return new Date(data).toLocaleDateString("it-IT", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    });
+}
 
-            count.textContent =
-                articles.length + (articles.length === 1 ? " articolo" : " articoli");
 
-            if (articles.length === 0) {
-                grid.innerHTML =
-                    '<div style="background:white; padding:35px; text-align:center; color:#777; grid-column:1/-1;">Non ci sono ancora articoli in questa categoria.</div>';
-                return;
-            }
+// CREAZIONE SCHEDE
 
-            // Mostra soltanto i primi 3 articoli
+function renderArticles(articles, gridId, countId, categoryName) {
 
-            articles.slice(0, 3).forEach(article => {
+    const grid = document.getElementById(gridId);
+    const count = document.getElementById(countId);
 
-                const card = document.createElement("article");
-                card.className = "news-card";
+    grid.replaceChildren();
 
-                const image = document.createElement("img");
-                image.src = article.image;
-                image.alt = article.title;
-                image.loading = "lazy";
+    count.textContent =
+        articles.length +
+        (articles.length === 1 ? " articolo" : " articoli");
 
-                const content = document.createElement("div");
-                content.className = "news-content";
+    if (articles.length === 0) {
+        const message = document.createElement("div");
 
-                const category = document.createElement("div");
-                category.className = "category";
-                category.textContent = categoryName;
+        message.style.cssText =
+            "background:white;padding:35px;text-align:center;color:#777;grid-column:1/-1;";
 
-                const title = document.createElement("h3");
-                title.textContent = article.title;
+        message.textContent =
+            "Non ci sono ancora articoli in questa sezione.";
 
-                const description = document.createElement("p");
-                description.textContent = article.description;
+        grid.appendChild(message);
+        return;
+    }
 
-                const meta = document.createElement("div");
-                meta.className = "meta";
-                meta.textContent = article.date + " · " + article.readingTime;
+    articles.slice(0, 3).forEach(article => {
 
-                const link = document.createElement("a");
-                link.className = "read-more";
-                link.href = article.link;
-                link.textContent = "Leggi l'articolo →";
+        const card = document.createElement("article");
+        card.className = "news-card";
 
-                content.append(category, title, description, meta, link);
-                card.append(image, content);
-
-                grid.appendChild(card);
-
-            });
-
+        if (article.immagine) {
+            const image = document.createElement("img");
+            image.src = article.immagine;
+            image.alt = article.titolo || "Immagine articolo";
+            image.loading = "lazy";
+            card.appendChild(image);
         }
 
+        const content = document.createElement("div");
+        content.className = "news-content";
 
-        // MOSTRA LE DUE SEZIONI
+        const category = document.createElement("div");
+        category.className = "category";
+        category.textContent = categoryName;
 
-        renderArticles(
-            internalArticles,
-            "internalGrid",
-            "internalCount",
-            "Politica interna"
-        );
+        const title = document.createElement("h3");
+        title.textContent = article.titolo;
 
-        renderArticles(
-            internationalArticles,
-            "internationalGrid",
-            "internationalCount",
-            "Politica internazionale"
-        );
+        const description = document.createElement("p");
+        description.textContent = article.descrizione || "";
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+
+        meta.textContent =
+            formattaData(article.data_pubblicazione) +
+            (article.autore ? " · " + article.autore : "");
+
+        const link = document.createElement("a");
+        link.className = "read-more";
+        link.href = "articolo.html?id=" + article.id;
+        link.textContent = "Leggi l'articolo →";
+
+        content.append(category, title, description, meta, link);
+        card.appendChild(content);
+
+        grid.appendChild(card);
+    });
+}
+
+
+// CARICAMENTO ARTICOLI POLITICA
+
+async function caricaPolitica() {
+
+    const { data: articoli, error } = await supabaseClient
+        .from("articoli")
+        .select("*")
+        .eq("pubblicato", true)
+        .eq("categoria", "Politica")
+        .order("data_pubblicazione", { ascending: false });
+
+    if (error) {
+        console.error("Errore Supabase:", error);
+
+        document.getElementById("internalGrid").textContent =
+            "Errore nel caricamento degli articoli.";
+
+        document.getElementById("internationalGrid").textContent =
+            "Errore nel caricamento degli articoli.";
+
+        return;
+    }
+
+    // NORMALIZZA LE SOTTOCATEGORIE
+    function normalizza(testo) {
+        return (testo || "")
+            .trim()
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
+    }
+
+    // DIVISIONE DEGLI ARTICOLI
+
+    const internalArticles = articoli.filter(article => {
+        const sottocategoria = normalizza(article.sottocategoria);
+
+        return sottocategoria.includes("interna") &&
+               !sottocategoria.includes("internazionale");
+    });
+
+    const internationalArticles = articoli.filter(article => {
+        const sottocategoria = normalizza(article.sottocategoria);
+
+        return sottocategoria.includes("internazionale");
+    });
+
+    // MOSTRA LE DUE SEZIONI
+
+    renderArticles(
+        internalArticles,
+        "internalGrid",
+        "internalCount",
+        "Politica interna"
+    );
+
+    renderArticles(
+        internationalArticles,
+        "internationalGrid",
+        "Politica internazionale"
+    );
+}
+
+// AVVIO
+
+caricaPolitica();
 
     </script>
 
