@@ -886,7 +886,7 @@ async function caricaArticoli() {
         description.textContent = articolo.descrizione || "";
 
         const link = document.createElement("a");
-        link.href = "#";
+        link.href = "articolo.html?id=" + articolo.id;
         link.className = "read-more";
         link.textContent = "Leggi l'articolo →";
 
