@@ -316,26 +316,26 @@
 
             // DATA
 
-            const meta = document.createElement("div");
-            meta.className = "meta";
+         const dataArticolo = new Date(
+    data.data_pubblicazione
+).toLocaleDateString("it-IT", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+});
 
-            const dataArticolo = new Date(
-                data.data_pubblicazione
-            ).toLocaleDateString("it-IT", {
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-            });
+meta.textContent = dataArticolo;
 
-            meta.textContent =
-                "REDAZIONE L'INTERVALLO · " + dataArticolo;
+if (data.autore && data.autore.trim()) {
+    meta.textContent += " · " + data.autore.trim();
+}
 
-            contenitore.replaceChildren(
-                categoria,
-                titolo,
-                descrizione,
-                meta
-            );
+contenitore.replaceChildren(
+    categoria,
+    titolo,
+    descrizione,
+    meta
+);
 
             // IMMAGINE
 
