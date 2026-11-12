@@ -279,6 +279,9 @@
             }
         }
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
 </head>
 
 <body>
@@ -347,105 +350,135 @@
 
     <script>
 
-        const today = new Date();
+// DATA E DATA CORRENTE
+const today = new Date();
 
-        document.getElementById("date").textContent =
-            today.toLocaleDateString("it-IT", {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-            });
+document.getElementById("date").textContent =
+    today.toLocaleDateString("it-IT", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    });
 
+// COLLEGAMENTO A SUPABASE
+const SUPABASE_URL = "https://yfxlfajooflleztnnsxl.supabase.co";
+const SUPABASE_KEY = "sb_publishable_mCQoLQm_2fa9cA6GpmO53A_SpSpaN87";
 
-        // ARTICOLI DI POLITICA INTERNA
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
 
-        const articles = [
+// FORMATTAZIONE DATA
+function formattaData(data) {
+    if (!data) return "";
 
-            {
-                title: "Democrazia e partecipazione: il ruolo dei cittadini",
-                description: "La partecipazione pubblica è uno degli elementi fondamentali della vita democratica. Ma quali strumenti hanno i cittadini per prendere parte alle decisioni collettive?",
-                image: "https://images.unsplash.com/photo-1520869562399-e772f042f422?w=700",
-                date: "L'INTERVALLO",
-                readingTime: "5 MIN DI LETTURA",
-                link: "#"
-            },
+    return new Date(data).toLocaleDateString("it-IT", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    });
+}
 
-            {
-                title: "Le sfide della politica contemporanea",
-                description: "Istituzioni, rappresentanza e trasformazioni sociali: uno sguardo sulle questioni che caratterizzano la politica di oggi.",
-                image: "https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=700",
-                date: "L'INTERVALLO",
-                readingTime: "5 MIN DI LETTURA",
-                link: "#"
-            },
+// NORMALIZZAZIONE TESTO
+function normalizza(testo) {
+    return (testo || "")
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+}
 
-            {
-                title: "Giovani e politica: nuove forme di partecipazione",
-                description: "Dalle iniziative locali al dibattito online, le nuove generazioni trovano diversi modi per partecipare alla vita pubblica.",
-                image: "https://images.unsplash.com/photo-1529390079861-591de354faf5?w=700",
-                date: "L'INTERVALLO",
-                readingTime: "4 MIN DI LETTURA",
-                link: "#"
-            }
+// CARICAMENTO ARTICOLI
+async function caricaArticoli() {
+    const newsGrid = document.getElementById("newsGrid");
+    const articleCount = document.getElementById("articleCount");
 
-        ];
+    const { data: articoli, error } = await supabaseClient
+        .from("articoli")
+        .select("*")
+        .eq("pubblicato", true)
+        .eq("categoria", "Politica")
+        .order("data_pubblicazione", { ascending: false });
 
+    if (error) {
+        console.error("Errore Supabase:", error);
+        newsGrid.textContent = "Errore nel caricamento degli articoli.";
+        return;
+    }
 
-        // CREAZIONE DELLE SCHEDE
+    // SELEZIONA SOLO POLITICA INTERNA
+    const articoliInterni = articoli.filter(article => {
+        const sottocategoria = normalizza(article.sottocategoria);
 
-        const newsGrid = document.getElementById("newsGrid");
+        return sottocategoria.includes("interna") &&
+               !sottocategoria.includes("internazionale");
+    });
 
-        document.getElementById("articleCount").textContent =
-            articles.length + (articles.length === 1 ? " articolo" : " articoli");
+    // AGGIORNA IL CONTATORE
+    articleCount.textContent =
+        articoliInterni.length +
+        (articoliInterni.length === 1 ? " articolo" : " articoli");
 
-        if (articles.length === 0) {
+    newsGrid.replaceChildren();
 
-            newsGrid.innerHTML =
-                '<div style="background:white; padding:35px; text-align:center; color:#777; grid-column:1/-1;">Non ci sono ancora articoli in questa categoria.</div>';
+    // NESSUN ARTICOLO
+    if (articoliInterni.length === 0) {
+        const messaggio = document.createElement("div");
+        messaggio.style.cssText =
+            "background:white;padding:35px;text-align:center;color:#777;grid-column:1/-1;";
+        messaggio.textContent =
+            "Non ci sono ancora articoli in questa categoria.";
 
-        } else {
+        newsGrid.appendChild(messaggio);
+        return;
+    }
 
-            articles.forEach(article => {
+    // CREA TUTTE LE SCHEDE, SENZA LIMITI
+    articoliInterni.forEach(article => {
+        const card = document.createElement("article");
+        card.className = "news-card";
 
-                const card = document.createElement("article");
-                card.className = "news-card";
-
-                const image = document.createElement("img");
-                image.src = article.image;
-                image.alt = article.title;
-                image.loading = "lazy";
-
-                const content = document.createElement("div");
-                content.className = "news-content";
-
-                const category = document.createElement("div");
-                category.className = "category";
-                category.textContent = "Politica interna";
-
-                const title = document.createElement("h3");
-                title.textContent = article.title;
-
-                const description = document.createElement("p");
-                description.textContent = article.description;
-
-                const meta = document.createElement("div");
-                meta.className = "meta";
-                meta.textContent = article.date + " · " + article.readingTime;
-
-                const link = document.createElement("a");
-                link.className = "read-more";
-                link.href = article.link;
-                link.textContent = "Leggi l'articolo →";
-
-                content.append(category, title, description, meta, link);
-                card.append(image, content);
-
-                newsGrid.appendChild(card);
-
-            });
-
+        if (article.immagine) {
+            const image = document.createElement("img");
+            image.src = article.immagine;
+            image.alt = article.titolo || "Immagine articolo";
+            image.loading = "lazy";
+            card.appendChild(image);
         }
+
+        const content = document.createElement("div");
+        content.className = "news-content";
+
+        const category = document.createElement("div");
+        category.className = "category";
+        category.textContent = "Politica interna";
+
+        const title = document.createElement("h3");
+        title.textContent = article.titolo;
+
+        const description = document.createElement("p");
+        description.textContent = article.descrizione || "";
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        meta.textContent =
+            formattaData(article.data_pubblicazione) +
+            (article.autore ? " · " + article.autore : "");
+
+        const link = document.createElement("a");
+        link.className = "read-more";
+        link.href = "articolo.html?id=" + article.id;
+        link.textContent = "Leggi l'articolo →";
+
+        content.append(category, title, description, meta, link);
+        card.appendChild(content);
+        newsGrid.appendChild(card);
+    });
+}
+
+caricaArticoli();
 
     </script>
 
