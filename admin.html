@@ -1,0 +1,654 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redazione | L'INTERVALLO</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --black: #171717;
+            --red: #c73535;
+            --gray: #777;
+            --light: #f5f4f1;
+            --border: #deded9;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: var(--light);
+            color: var(--black);
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        header {
+            background: var(--black);
+            color: white;
+            padding: 22px 20px;
+            text-align: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 30px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        header p {
+            color: #ccc;
+            font-size: 13px;
+            margin: 5px 0 0;
+        }
+
+        .topline {
+            height: 4px;
+            background: var(--red);
+        }
+
+        main {
+            max-width: 850px;
+            margin: 45px auto;
+            padding: 0 20px;
+        }
+
+        .heading {
+            margin-bottom: 30px;
+        }
+
+        .heading small {
+            color: var(--red);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        h1, h2 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        h1 {
+            font-size: 38px;
+            margin: 8px 0;
+        }
+
+        .heading p {
+            color: var(--gray);
+            margin: 0;
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        .panel h2 {
+            margin-top: 0;
+            font-size: 23px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            margin: 20px 0 8px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid var(--border);
+            background: #fff;
+            font: inherit;
+            color: var(--black);
+            border-radius: 2px;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: 2px solid #c7353540;
+            border-color: var(--red);
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        #contenuto {
+            min-height: 280px;
+        }
+
+        .hint {
+            color: var(--gray);
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        button {
+            border: none;
+            padding: 13px 22px;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .primary {
+            background: var(--red);
+            color: white;
+        }
+
+        .secondary {
+            background: var(--black);
+            color: white;
+        }
+
+        .logout {
+            background: transparent;
+            border: 1px solid #aaa;
+            color: var(--black);
+        }
+
+        button:hover {
+            opacity: .85;
+        }
+
+        button:disabled {
+            opacity: .5;
+            cursor: wait;
+        }
+
+        #messaggio {
+            display: none;
+            padding: 13px;
+            margin-top: 18px;
+            font-size: 14px;
+            background: #eee;
+        }
+
+        #messaggio.visibile {
+            display: block;
+        }
+
+        .article-item {
+            padding: 17px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .article-item h3 {
+            margin: 0 0 6px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .article-item p {
+            color: var(--gray);
+            font-size: 13px;
+            margin: 5px 0;
+        }
+
+        .status {
+            color: var(--red);
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        footer {
+            background: var(--black);
+            color: #aaa;
+            text-align: center;
+            padding: 25px;
+            font-size: 12px;
+            margin-top: 60px;
+        }
+
+        @media (max-width: 600px) {
+            main { margin-top: 28px; }
+            .panel { padding: 20px; }
+            h1 { font-size: 31px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="topline"></div>
+
+<header>
+    <div class="logo">L'INTERVALLO</div>
+    <p>Area riservata · Redazione</p>
+</header>
+
+<main>
+
+    <!-- ACCESSO -->
+    <section id="loginSection" class="panel">
+        <div class="heading">
+            <small>Area riservata</small>
+            <h1>Accesso redazione</h1>
+            <p>Accedi per gestire le notizie del giornale.</p>
+        </div>
+
+        <form id="loginForm">
+            <label for="email">Email</label>
+            <input type="email" id="email" required autocomplete="username">
+
+            <label for="password">Password</label>
+            <input type="password" id="password" required autocomplete="current-password">
+
+            <div class="buttons">
+                <button class="primary" type="submit">Accedi</button>
+            </div>
+        </form>
+
+        <div id="loginMessage" class="hint"></div>
+    </section>
+
+    <!-- REDAZIONE -->
+    <section id="adminSection" class="hidden">
+
+        <div class="heading">
+            <small>Pannello redazionale</small>
+            <h1>Gestione articoli</h1>
+            <p>Scrivi, modifica e pubblica le notizie de L'INTERVALLO.</p>
+        </div>
+
+        <div class="buttons" style="margin-bottom:25px;">
+            <button class="logout" id="logoutButton" type="button">Esci</button>
+        </div>
+
+        <!-- FORM ARTICOLO -->
+        <section class="panel">
+            <h2 id="formTitle">Nuovo articolo</h2>
+
+            <form id="articleForm">
+
+                <label for="titolo">Titolo</label>
+                <input type="text" id="titolo" maxlength="180" required>
+
+                <label for="descrizione">Descrizione breve</label>
+                <textarea id="descrizione" maxlength="400" required></textarea>
+                <div class="hint">Una breve presentazione che apparirà nelle schede del sito.</div>
+
+                <label for="categoria">Categoria</label>
+                <select id="categoria" required>
+                    <option value="">Seleziona una categoria</option>
+                    <option value="Attualità">Attualità</option>
+                    <option value="Politica">Politica</option>
+                    <option value="Mondo">Mondo</option>
+                    <option value="Tecnologia">Tecnologia</option>
+                    <option value="Cultura">Cultura</option>
+                    <option value="Sport">Sport</option>
+                </select>
+
+                <label for="sottocategoria">Sottocategoria</label>
+                <input type="text" id="sottocategoria" placeholder="Es. Politica interna, Calcio, Cinema...">
+
+                <label for="contenuto">Contenuto dell'articolo</label>
+                <textarea id="contenuto" required></textarea>
+                <div class="hint">Per ora il testo viene salvato come testo semplice.</div>
+
+                <label for="immagine">Immagine di copertina</label>
+                <input type="file" id="immagine" accept="image/*">
+                <div class="hint" id="imageHint">Puoi caricare JPG, PNG o WebP.</div>
+
+                <div class="buttons">
+                    <button type="submit" class="secondary" id="draftButton">Salva bozza</button>
+                    <button type="button" class="primary" id="publishButton">Pubblica articolo</button>
+                    <button type="button" class="logout hidden" id="cancelEditButton">Annulla modifica</button>
+                </div>
+
+            </form>
+
+            <div id="messaggio"></div>
+        </section>
+
+        <!-- LISTA ARTICOLI -->
+        <section class="panel">
+            <h2>Articoli salvati</h2>
+            <div id="articleList">Caricamento articoli...</div>
+        </section>
+
+    </section>
+
+</main>
+
+<footer>
+    L'INTERVALLO · Area riservata alla redazione
+</footer>
+
+<script>
+    // CONFIGURAZIONE SUPABASE
+    const SUPABASE_URL = "https://yfxlfajooflleztnnsxl.supabase.co/rest/v1/";
+    const SUPABASE_KEY = "sb_publishable_mCQoLQm_2fa9cA6GpmO53A_SpSpaN87";
+
+    const supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+    let articoloInModifica = null;
+    let immagineAttuale = null;
+    let sessioneUtente = null;
+
+    const loginSection = document.getElementById("loginSection");
+    const adminSection = document.getElementById("adminSection");
+    const articleForm = document.getElementById("articleForm");
+    const messaggio = document.getElementById("messaggio");
+
+    function mostraMessaggio(testo, errore = false) {
+        messaggio.textContent = testo;
+        messaggio.style.background = errore ? "#f8dddd" : "#e1eee2";
+        messaggio.classList.add("visibile");
+    }
+
+    function mostraLoginMessaggio(testo) {
+        document.getElementById("loginMessage").textContent = testo;
+    }
+
+    function mostraPannello() {
+        loginSection.classList.add("hidden");
+        adminSection.classList.remove("hidden");
+        caricaListaArticoli();
+    }
+
+    function mostraLogin() {
+        adminSection.classList.add("hidden");
+        loginSection.classList.remove("hidden");
+    }
+
+    // CONTROLLO SESSIONE
+    async function controllaSessione() {
+        const { data, error } = await supabaseClient.auth.getSession();
+
+        if (error) {
+            console.error(error);
+            mostraLogin();
+            return;
+        }
+
+        sessioneUtente = data.session;
+
+        if (sessioneUtente) {
+            mostraPannello();
+        } else {
+            mostraLogin();
+        }
+    }
+
+    // LOGIN
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const bottone = e.target.querySelector("button");
+        bottone.disabled = true;
+        mostraLoginMessaggio("Accesso in corso...");
+
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email: document.getElementById("email").value.trim(),
+            password: document.getElementById("password").value
+        });
+
+        bottone.disabled = false;
+
+        if (error) {
+            mostraLoginMessaggio("Accesso non riuscito. Controlla email e password.");
+            console.error(error);
+            return;
+        }
+
+        sessioneUtente = data.session;
+        mostraLoginMessaggio("");
+        mostraPannello();
+    });
+
+    // LOGOUT
+    document.getElementById("logoutButton").addEventListener("click", async () => {
+        await supabaseClient.auth.signOut();
+        sessioneUtente = null;
+        articoloForm.reset();
+        resetModifica();
+        mostraLogin();
+    });
+
+    // CARICAMENTO ARTICOLI
+    async function caricaListaArticoli() {
+        const lista = document.getElementById("articleList");
+        lista.textContent = "Caricamento...";
+
+        const { data, error } = await supabaseClient
+            .from("articoli")
+            .select("*")
+            .order("created_at", { ascending: false });
+
+        if (error) {
+            lista.textContent = "Errore nel caricamento degli articoli.";
+            console.error(error);
+            return;
+        }
+
+        lista.replaceChildren();
+
+        if (!data || data.length === 0) {
+            lista.textContent = "Non hai ancora scritto articoli.";
+            return;
+        }
+
+        data.forEach(articolo => {
+            const item = document.createElement("div");
+            item.className = "article-item";
+
+            const title = document.createElement("h3");
+            title.textContent = articolo.titolo;
+
+            const status = document.createElement("div");
+            status.className = "status";
+            status.textContent = articolo.pubblicato ? "Pubblicato" : "Bozza";
+
+            const description = document.createElement("p");
+            description.textContent = articolo.descrizione || "";
+
+            const editButton = document.createElement("button");
+            editButton.type = "button";
+            editButton.className = "secondary";
+            editButton.textContent = "Modifica";
+            editButton.addEventListener("click", () => modificaArticolo(articolo));
+
+            const deleteButton = document.createElement("button");
+            deleteButton.type = "button";
+            deleteButton.className = "logout";
+            deleteButton.textContent = "Elimina";
+            deleteButton.style.marginLeft = "8px";
+            deleteButton.addEventListener("click", () => eliminaArticolo(articolo.id));
+
+            item.append(title, status, description, editButton, deleteButton);
+            lista.appendChild(item);
+        });
+    }
+
+    // CARICAMENTO IMMAGINE
+    async function caricaImmagine(file) {
+        const estensione = file.name.split(".").pop().toLowerCase();
+        const nomeFile = crypto.randomUUID() + "." + estensione;
+        const percorso = nomeFile;
+
+        const { error } = await supabaseClient.storage
+            .from("immagini-articoli")
+            .upload(percorso, file, {
+                cacheControl: "3600",
+                upsert: false
+            });
+
+        if (error) throw error;
+
+        const { data } = supabaseClient.storage
+            .from("immagini-articoli")
+            .getPublicUrl(percorso);
+
+        return data.publicUrl;
+    }
+
+    // SALVATAGGIO ARTICOLO
+    async function salvaArticolo(pubblicato) {
+        const bottone = document.getElementById(
+            pubblicato ? "publishButton" : "draftButton"
+        );
+
+        bottone.disabled = true;
+
+        try {
+            let urlImmagine = immagineAttuale;
+            const file = document.getElementById("immagine").files[0];
+
+            if (file) {
+                if (!file.type.startsWith("image/")) {
+                    throw new Error("Il file selezionato non è un'immagine.");
+                }
+
+                if (file.size > 5 * 1024 * 1024) {
+                    throw new Error("L'immagine supera il limite di 5 MB.");
+                }
+
+                urlImmagine = await caricaImmagine(file);
+            }
+
+            const articolo = {
+                titolo: document.getElementById("titolo").value.trim(),
+                descrizione: document.getElementById("descrizione").value.trim(),
+                categoria: document.getElementById("categoria").value,
+                sottocategoria: document.getElementById("sottocategoria").value.trim() || null,
+                contenuto: document.getElementById("contenuto").value.trim(),
+                immagine: urlImmagine,
+                pubblicato: pubblicato,
+                data_pubblicazione: pubblicato ? new Date().toISOString() : null
+            };
+
+            if (articoloInModifica !== null) {
+                const { error } = await supabaseClient
+                    .from("articoli")
+                    .update(articolo)
+                    .eq("id", articoloInModifica);
+
+                if (error) throw error;
+            } else {
+                const { error } = await supabaseClient
+                    .from("articoli")
+                    .insert([articolo]);
+
+                if (error) throw error;
+            }
+
+            mostraMessaggio(pubblicato ? "Articolo pubblicato!" : "Bozza salvata!");
+            articleForm.reset();
+            resetModifica();
+            await caricaListaArticoli();
+
+        } catch (error) {
+            console.error(error);
+            mostraMessaggio("Errore: " + error.message, true);
+        } finally {
+            bottone.disabled = false;
+        }
+    }
+
+    // PULSANTI SALVATAGGIO
+    articleForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        await salvaArticolo(false);
+    });
+
+    document.getElementById("publishButton").addEventListener("click", async () => {
+        if (!articleForm.reportValidity()) return;
+        await salvaArticolo(true);
+    });
+
+    // MODIFICA
+    function modificaArticolo(articolo) {
+        articoloInModifica = articolo.id;
+        immagineAttuale = articolo.immagine;
+
+        document.getElementById("titolo").value = articolo.titolo || "";
+        document.getElementById("descrizione").value = articolo.descrizione || "";
+        document.getElementById("categoria").value = articolo.categoria || "";
+        document.getElementById("sottocategoria").value = articolo.sottocategoria || "";
+        document.getElementById("contenuto").value = articolo.contenuto || "";
+
+        document.getElementById("formTitle").textContent = "Modifica articolo";
+        document.getElementById("cancelEditButton").classList.remove("hidden");
+        document.getElementById("imageHint").textContent =
+            "Lascia vuoto per mantenere l'immagine attuale.";
+
+        document.getElementById("articleForm").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function resetModifica() {
+        articoloInModifica = null;
+        immagineAttuale = null;
+
+        document.getElementById("formTitle").textContent = "Nuovo articolo";
+        document.getElementById("cancelEditButton").classList.add("hidden");
+        document.getElementById("imageHint").textContent =
+            "Puoi caricare JPG, PNG o WebP.";
+    }
+
+    document.getElementById("cancelEditButton").addEventListener("click", () => {
+        articleForm.reset();
+        resetModifica();
+        messaggio.classList.remove("visibile");
+    });
+
+    // ELIMINAZIONE
+    async function eliminaArticolo(id) {
+        if (!confirm("Vuoi davvero eliminare questo articolo?")) return;
+
+        const { error } = await supabaseClient
+            .from("articoli")
+            .delete()
+            .eq("id", id);
+
+        if (error) {
+            mostraMessaggio("Impossibile eliminare l'articolo.", true);
+            console.error(error);
+            return;
+        }
+
+        mostraMessaggio("Articolo eliminato.");
+        caricaListaArticoli();
+    }
+
+    // AVVIO
+    controllaSessione();
+
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+        sessioneUtente = session;
+
+        if (session) {
+            mostraPannello();
+        } else {
+            mostraLogin();
+        }
+    });
+</script>
+
+</body>
+</html>
