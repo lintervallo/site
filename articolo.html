@@ -1,0 +1,223 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articolo | L'INTERVALLO</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --black: #171717;
+            --red: #c73535;
+            --gray: #777;
+            --light: #f5f4f1;
+            --border: #deded9;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--light);
+            color: var(--black);
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        header {
+            background: var(--black);
+            color: white;
+            text-align: center;
+            padding: 28px 20px;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+
+        header p {
+            color: #ccc;
+            margin: 5px 0 0;
+        }
+
+        main {
+            max-width: 850px;
+            margin: 55px auto;
+            padding: 0 22px;
+        }
+
+        .back {
+            color: var(--red);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .category {
+            color: var(--red);
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: 35px;
+            font-size: 13px;
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(34px, 6vw, 54px);
+            line-height: 1.15;
+            margin: 12px 0;
+        }
+
+        .description {
+            color: var(--gray);
+            font-size: 19px;
+            line-height: 1.6;
+        }
+
+        .date {
+            color: var(--gray);
+            font-size: 13px;
+            margin: 20px 0;
+        }
+
+        .article-image {
+            width: 100%;
+            max-height: 480px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin: 15px 0 30px;
+        }
+
+        .content {
+            font-size: 18px;
+            line-height: 1.9;
+            white-space: pre-wrap;
+        }
+
+        footer {
+            background: var(--black);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            margin-top: 80px;
+        }
+
+        #errore {
+            text-align: center;
+            padding: 60px 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <a href="index.html">
+        <h1>L'INTERVALLO</h1>
+        <p>Prenditi una pausa e guarda il mondo da vicino</p>
+    </a>
+</header>
+
+<main>
+    <a href="index.html" class="back">← Torna alla homepage</a>
+
+    <div id="articolo">
+        <p>Caricamento articolo...</p>
+    </div>
+</main>
+
+<footer>
+    © 2026 L'INTERVALLO — Tutti i diritti riservati
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    const SUPABASE_URL = "https://yfxlfajooflleztnnsxl.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_mCQoLQm_2fa9cA6GpmO53A_SpSpaN87";
+
+    const supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+    async function caricaArticolo() {
+        const contenitore = document.getElementById("articolo");
+
+        const parametri = new URLSearchParams(window.location.search);
+        const id = parametri.get("id");
+
+        if (!id || !/^\d+$/.test(id)) {
+            contenitore.textContent = "Articolo non trovato.";
+            return;
+        }
+
+        const { data, error } = await supabaseClient
+            .from("articoli")
+            .select("*")
+            .eq("id", id)
+            .eq("pubblicato", true)
+            .single();
+
+        if (error || !data) {
+            contenitore.textContent = "Impossibile trovare questo articolo.";
+            console.error(error);
+            return;
+        }
+
+        const categoria = document.createElement("div");
+        categoria.className = "category";
+        categoria.textContent = data.categoria;
+
+        const titolo = document.createElement("h2");
+        titolo.textContent = data.titolo;
+
+        const descrizione = document.createElement("p");
+        descrizione.className = "description";
+        descrizione.textContent = data.descrizione || "";
+
+        const dataPubblicazione = document.createElement("p");
+        dataPubblicazione.className = "date";
+        dataPubblicazione.textContent = new Date(
+            data.data_pubblicazione
+        ).toLocaleDateString("it-IT");
+
+        contenitore.replaceChildren(
+            categoria,
+            titolo,
+            descrizione,
+            dataPubblicazione
+        );
+
+        if (data.immagine) {
+            const immagine = document.createElement("img");
+            immagine.className = "article-image";
+            immagine.src = data.immagine;
+            immagine.alt = data.titolo;
+            contenitore.appendChild(immagine);
+        }
+
+        const testo = document.createElement("div");
+        testo.className = "content";
+        testo.textContent = data.contenuto;
+
+        contenitore.appendChild(testo);
+    }
+
+    caricaArticolo();
+</script>
+
+</body>
+</html>
