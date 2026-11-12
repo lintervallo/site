@@ -538,16 +538,17 @@
                 urlImmagine = await caricaImmagine(file);
             }
 
-            const articolo = {
-                titolo: document.getElementById("titolo").value.trim(),
-                descrizione: document.getElementById("descrizione").value.trim(),
-                categoria: document.getElementById("categoria").value,
-                sottocategoria: document.getElementById("sottocategoria").value.trim() || null,
-                contenuto: document.getElementById("contenuto").value.trim(),
-                immagine: urlImmagine,
-                pubblicato: pubblicato,
-                data_pubblicazione: pubblicato ? new Date().toISOString() : null
-            };
+        const articolo = {
+    titolo: document.getElementById("titolo").value.trim(),
+    autore: document.getElementById("autore").value.trim() || null,
+    descrizione: document.getElementById("descrizione").value.trim(),
+    categoria: document.getElementById("categoria").value,
+    sottocategoria: document.getElementById("sottocategoria").value.trim() || null,
+    contenuto: document.getElementById("contenuto").value.trim(),
+    immagine: urlImmagine,
+    pubblicato: pubblicato,
+    data_pubblicazione: pubblicato ? new Date().toISOString() : null
+};
 
             if (articoloInModifica !== null) {
                 const { error } = await supabaseClient
