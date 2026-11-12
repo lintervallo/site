@@ -785,15 +785,14 @@ href="https://sibforms.com/forms/end-form/build/sib-styles.css">
 
         // Ricerca delle notizie
         const searchInput = document.getElementById("searchInput");
-        const newsCards = document.querySelectorAll(".news-card");
-
         searchInput.addEventListener("input", function() {
             const query = this.value.toLowerCase();
-
+            const newsCards = document.querySelectorAll(".news-card");
+            
             newsCards.forEach(card => {
                 const text = card.textContent.toLowerCase();
                 card.style.display = text.includes(query) ? "" : "none";
-            });
+                });
         });
     </script>
 
@@ -815,34 +814,102 @@ href="https://sibforms.com/forms/end-form/build/sib-styles.css">
 
 async function caricaArticoli() {
     const newsGrid = document.getElementById("newsGrid");
+    const heroMain = document.getElementById("heroMain");
+    const sideNews = document.getElementById("sideNews");
+    const latestNews = document.getElementById("latestNews");
 
     const { data: articoli, error } = await supabaseClient
         .from("articoli")
         .select("*")
-        .eq("pubblicato", true);
+        .eq("pubblicato", true)
+        .order("data_pubblicazione", { ascending: false });
 
     if (error) {
         console.error("Errore nel caricamento:", error);
-
-        alert(
-            "Errore Supabase:\n" +
-            error.message +
-            "\nDettagli: " +
-            (error.details || "") +
-            "\nCodice: " +
-            (error.code || "")
-        );
-
         newsGrid.textContent = "Impossibile caricare le notizie.";
+        heroMain.querySelector("h1").textContent =
+            "Impossibile caricare l'articolo in primo piano.";
         return;
     }
-
-    newsGrid.replaceChildren();
 
     if (!articoli || articoli.length === 0) {
         newsGrid.textContent = "Non ci sono ancora articoli pubblicati.";
+        sideNews.textContent = "Nessun'altra notizia disponibile.";
+        latestNews.textContent = "Non ci sono ancora ultime notizie.";
         return;
     }
+
+    // ARTICOLO PRINCIPALE:
+    // prima quello selezionato manualmente, altrimenti il più recente
+    const principale =
+        articoli.find(a => a.in_evidenza === true) || articoli[0];
+
+    // DATA
+    function formattaData(data) {
+        if (!data) return "";
+        return new Date(data).toLocaleDateString("it-IT", {
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        });
+    }
+
+    // HERO PRINCIPALE
+    document.getElementById("heroCategory").textContent =
+        principale.categoria || "Attualità";
+
+    const heroLink = document.getElementById("heroLink");
+    heroLink.textContent = principale.titolo;
+    heroLink.href = "articolo.html?id=" + principale.id;
+
+    document.getElementById("heroDescription").textContent =
+        principale.descrizione || "";
+
+    if (principale.immagine) {
+        heroMain.style.backgroundImage =
+            "linear-gradient(transparent, rgba(0,0,0,.85)), url('" +
+            principale.immagine +
+            "')";
+    }
+
+    // TRE NOTIZIE LATERALI
+    sideNews.replaceChildren();
+
+    const laterali = articoli
+        .filter(a => a.id !== principale.id)
+        .slice(0, 3);
+
+    laterali.forEach(articolo => {
+        const card = document.createElement("article");
+        card.className = "side-card";
+
+        const img = document.createElement("img");
+        img.src = articolo.immagine || "";
+        img.alt = articolo.titolo || "Immagine articolo";
+
+        const content = document.createElement("div");
+
+        const category = document.createElement("div");
+        category.className = "category";
+        category.textContent = articolo.categoria || "Attualità";
+
+        const title = document.createElement("h3");
+        const link = document.createElement("a");
+        link.href = "articolo.html?id=" + articolo.id;
+        link.textContent = articolo.titolo;
+        title.appendChild(link);
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        meta.textContent = formattaData(articolo.data_pubblicazione);
+
+        content.append(category, title, meta);
+        card.append(img, content);
+        sideNews.appendChild(card);
+    });
+
+    // GRIGLIA DELLE NOTIZIE
+    newsGrid.replaceChildren();
 
     articoli.forEach(articolo => {
         const card = document.createElement("article");
@@ -873,6 +940,35 @@ async function caricaArticoli() {
         content.append(category, title, description, link);
         card.append(img, content);
         newsGrid.appendChild(card);
+    });
+
+    // ULTIME NOTIZIE
+    latestNews.replaceChildren();
+
+    articoli.slice(0, 5).forEach(articolo => {
+        const item = document.createElement("div");
+        item.className = "latest-item";
+
+        const category = document.createElement("div");
+        category.className = "category";
+        category.textContent =
+            (articolo.categoria || "Attualità") +
+            " · " + formattaData(articolo.data_pubblicazione);
+
+        const title = document.createElement("h3");
+        const link = document.createElement("a");
+        link.href = "articolo.html?id=" + articolo.id;
+        link.textContent = articolo.titolo;
+        title.appendChild(link);
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        meta.textContent = articolo.autore
+            ? articolo.autore
+            : "REDAZIONE L'INTERVALLO";
+
+        item.append(category, title, meta);
+        latestNews.appendChild(item);
     });
 }
 
