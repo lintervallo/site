@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Le notizie di politica nazionale e internazionale su L'Intervallo.">
+    <meta name="description" content="Le notizie di politica interna e internazionale su L'Intervallo.">
     <title>Politica | L'INTERVALLO</title>
 
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
@@ -106,7 +106,7 @@
         .category-header {
             border-bottom: 2px solid var(--black);
             padding-bottom: 25px;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
 
         .eyebrow {
@@ -132,17 +132,25 @@
             max-width: 650px;
         }
 
+        /* SEZIONI POLITICA */
+
+        .politics-section {
+            margin-bottom: 65px;
+        }
+
         .articles-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 22px;
             gap: 15px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
         }
 
         .articles-info h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 25px;
+            font-size: 29px;
         }
 
         .article-count {
@@ -154,7 +162,6 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 25px;
-            margin-bottom: 60px;
         }
 
         .news-card {
@@ -222,6 +229,30 @@
 
         .read-more:hover {
             color: #921f1f;
+        }
+
+        /* VEDI TUTTO */
+
+        .see-all-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        .see-all {
+            display: inline-block;
+            background: var(--black);
+            color: white;
+            padding: 13px 22px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background .2s;
+        }
+
+        .see-all:hover {
+            background: var(--red);
         }
 
         footer {
@@ -306,20 +337,46 @@
             <h1>Politica</h1>
             <p>
                 Istituzioni, decisioni pubbliche, governi e partecipazione
-                democratica. Uno spazio per comprendere le dinamiche
-                politiche italiane e internazionali, attraverso
-                informazione e approfondimento.
+                democratica. Seguiamo la politica italiana e internazionale
+                per comprendere le decisioni che influenzano il nostro presente.
             </p>
         </section>
 
-        <section>
+        <!-- POLITICA INTERNA -->
+
+        <section class="politics-section">
 
             <div class="articles-info">
-                <h2>Tutti gli articoli</h2>
-                <span class="article-count" id="articleCount"></span>
+                <h2>Politica interna</h2>
+                <span class="article-count" id="internalCount"></span>
             </div>
 
-            <div class="news-grid" id="newsGrid"></div>
+            <div class="news-grid" id="internalGrid"></div>
+
+            <div class="see-all-container">
+                <a href="politica-interna.html" class="see-all">
+                    Vedi tutto →
+                </a>
+            </div>
+
+        </section>
+
+        <!-- POLITICA INTERNAZIONALE -->
+
+        <section class="politics-section">
+
+            <div class="articles-info">
+                <h2>Politica internazionale</h2>
+                <span class="article-count" id="internationalCount"></span>
+            </div>
+
+            <div class="news-grid" id="internationalGrid"></div>
+
+            <div class="see-all-container">
+                <a href="politica-internazionale.html" class="see-all">
+                    Vedi tutto →
+                </a>
+            </div>
 
         </section>
 
@@ -347,9 +404,9 @@
             });
 
 
-        // ARTICOLI DELLA CATEGORIA POLITICA
+        // ARTICOLI DI POLITICA INTERNA
 
-        const articles = [
+        const internalArticles = [
 
             {
                 title: "Democrazia e partecipazione: il ruolo dei cittadini",
@@ -381,21 +438,59 @@
         ];
 
 
-        // CREAZIONE AUTOMATICA DELLE SCHEDE
+        // ARTICOLI DI POLITICA INTERNAZIONALE
 
-        const newsGrid = document.getElementById("newsGrid");
+        const internationalArticles = [
 
-        document.getElementById("articleCount").textContent =
-            articles.length + (articles.length === 1 ? " articolo" : " articoli");
+            {
+                title: "Gli equilibri internazionali in un mondo che cambia",
+                description: "Le relazioni tra gli Stati stanno attraversando una fase di trasformazione. Quali sono le nuove sfide della diplomazia?",
+                image: "https://images.unsplash.com/photo-1526470608268-f674ce90ebd4?w=700",
+                date: "L'INTERVALLO",
+                readingTime: "6 MIN DI LETTURA",
+                link: "#"
+            },
 
-        if (articles.length === 0) {
+            {
+                title: "L'Unione Europea e le sfide del futuro",
+                description: "Economia, sicurezza e cooperazione: le questioni che attendono i Paesi membri dell'Unione Europea.",
+                image: "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=700",
+                date: "L'INTERVALLO",
+                readingTime: "5 MIN DI LETTURA",
+                link: "#"
+            },
 
-            newsGrid.innerHTML =
-                '<div style="background:white; padding:35px; text-align:center; color:#777; grid-column:1/-1;">Non ci sono ancora articoli in questa categoria.</div>';
+            {
+                title: "Diplomazia e cooperazione tra le nazioni",
+                description: "Il dialogo internazionale resta uno strumento fondamentale per affrontare le questioni globali e costruire accordi tra gli Stati.",
+                image: "https://images.unsplash.com/photo-1521295121783-8a321d551ad2?w=700",
+                date: "L'INTERVALLO",
+                readingTime: "4 MIN DI LETTURA",
+                link: "#"
+            }
 
-        } else {
+        ];
 
-            articles.forEach(article => {
+
+        // FUNZIONE PER CREARE LE SCHEDE
+
+        function renderArticles(articles, gridId, countId, categoryName) {
+
+            const grid = document.getElementById(gridId);
+            const count = document.getElementById(countId);
+
+            count.textContent =
+                articles.length + (articles.length === 1 ? " articolo" : " articoli");
+
+            if (articles.length === 0) {
+                grid.innerHTML =
+                    '<div style="background:white; padding:35px; text-align:center; color:#777; grid-column:1/-1;">Non ci sono ancora articoli in questa categoria.</div>';
+                return;
+            }
+
+            // Mostra soltanto i primi 3 articoli
+
+            articles.slice(0, 3).forEach(article => {
 
                 const card = document.createElement("article");
                 card.className = "news-card";
@@ -410,7 +505,7 @@
 
                 const category = document.createElement("div");
                 category.className = "category";
-                category.textContent = "Politica";
+                category.textContent = categoryName;
 
                 const title = document.createElement("h3");
                 title.textContent = article.title;
@@ -430,11 +525,28 @@
                 content.append(category, title, description, meta, link);
                 card.append(image, content);
 
-                newsGrid.appendChild(card);
+                grid.appendChild(card);
 
             });
 
         }
+
+
+        // MOSTRA LE DUE SEZIONI
+
+        renderArticles(
+            internalArticles,
+            "internalGrid",
+            "internalCount",
+            "Politica interna"
+        );
+
+        renderArticles(
+            internationalArticles,
+            "internationalGrid",
+            "internationalCount",
+            "Politica internazionale"
+        );
 
     </script>
 
