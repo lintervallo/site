@@ -315,26 +315,24 @@
             descrizione.textContent = data.descrizione || "";
 
             // DATA
-const dataArticolo = new Date(
-    data.data_pubblicazione
-).toLocaleDateString("it-IT", {
-    day: "numeric",
-    month: "long",
-    year: "numeric"
-});
+            const dataArticolo = new Date(
+                data.data_pubblicazione
+            ).toLocaleDateString("it-IT", {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            });
 
-meta.textContent = dataArticolo;
-
-if (data.autore && data.autore.trim()) {
-    meta.textContent += " · " + data.autore.trim();
-}
-
-contenitore.replaceChildren(
-    categoria,
-    titolo,
-    descrizione,
-    meta
-);
+            meta.textContent = dataArticolo;
+            if (data.autore && data.autore.trim()) {
+                meta.textContent += " · " + data.autore.trim();
+            }
+            contenitore.replaceChildren(
+                categoria,
+                titolo,
+                descrizione,
+                meta
+            );
 
             // IMMAGINE
 
