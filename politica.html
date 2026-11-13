@@ -505,8 +505,6 @@ function renderArticles(articles, gridId, countId, categoryName) {
 }
 
 
-// CARICAMENTO ARTICOLI POLITICA
-
 async function caricaPolitica() {
 
     const { data: articoli, error } = await supabaseClient
@@ -517,23 +515,11 @@ async function caricaPolitica() {
         .order("data_pubblicazione", { ascending: false });
 
     if (error) {
-    console.error("Errore Supabase:", error);
-
-    alert(
-        "Errore Supabase: " +
-        error.message +
-        "\nCodice: " +
-        (error.code || "nessuno")
-    );
-
-    document.getElementById("internalGrid").textContent =
-        "Errore nel caricamento degli articoli.";
-    document.getElementById("internationalGrid").textContent =
-        "Errore nel caricamento degli articoli.";
-    return;
+        console.error(error);
+        alert("Errore: " + error.message);
+        return;
     }
 
-    // NORMALIZZA LE SOTTOCATEGORIE
     function normalizza(testo) {
         return (testo || "")
             .trim()
@@ -542,8 +528,7 @@ async function caricaPolitica() {
             .replace(/[\u0300-\u036f]/g, "");
     }
 
-    // DIVISIONE DEGLI ARTICOLI
-
+    // SOLO POLITICA INTERNA
     const internalArticles = articoli.filter(article => {
         const sottocategoria = normalizza(article.sottocategoria);
 
@@ -551,20 +536,14 @@ async function caricaPolitica() {
                !sottocategoria.includes("internazionale");
     });
 
+    // SOLO POLITICA INTERNAZIONALE
     const internationalArticles = articoli.filter(article => {
         const sottocategoria = normalizza(article.sottocategoria);
 
         return sottocategoria.includes("internazionale");
     });
-    alert(
-        "Articoli ricevuti: " + articoli.length +
-        "\nArticoli internazionali: " + internationalArticles.length +
-        "\nSottocategorie: " +
-        articoli.map(a => a.sottocategoria).join(", ")
-    );
 
-    // MOSTRA LE DUE SEZIONI
-
+    // ANTEPRIME INDIPENDENTI
     renderArticles(
         internalArticles,
         "internalGrid",
@@ -575,13 +554,13 @@ async function caricaPolitica() {
     renderArticles(
         internationalArticles,
         "internationalGrid",
+        "internationalCount",
         "Politica internazionale"
     );
 }
 
-// AVVIO
-
 caricaPolitica();
+
 
     </script>
 
