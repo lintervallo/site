@@ -358,11 +358,10 @@
     </div>
 
     <main class="container">
-
         <div class="breadcrumb">
             <a href="index.html">Home</a> / Cultura
         </div>
-
+        
         <section class="category-header">
             <div class="eyebrow">LE NOSTRE CATEGORIE</div>
             <h1>Cultura</h1>
@@ -372,39 +371,14 @@
                 il mondo della cultura contemporanea.
             </p>
         </section>
-
-        <section class="culture-section">
+        <section>
             <div class="articles-info">
-                <h2>Musica</h2>
-                <span class="article-count" id="countMusica">Caricamento...</span>
+                <h2>Tutti gli articoli</h2>
+                <span class="article-count" id="articleCount">Caricamento...</span>
             </div>
-            <div class="news-grid" id="gridMusica"></div>
+            
+            <div class="news-grid" id="newsGrid"></div>
         </section>
-
-        <section class="culture-section">
-            <div class="articles-info">
-                <h2>Arte</h2>
-                <span class="article-count" id="countArte">Caricamento...</span>
-            </div>
-            <div class="news-grid" id="gridArte"></div>
-        </section>
-
-        <section class="culture-section">
-            <div class="articles-info">
-                <h2>Letteratura</h2>
-                <span class="article-count" id="countLetteratura">Caricamento...</span>
-            </div>
-            <div class="news-grid" id="gridLetteratura"></div>
-        </section>
-
-        <section class="culture-section">
-            <div class="articles-info">
-                <h2>Cinema</h2>
-                <span class="article-count" id="countCinema">Caricamento...</span>
-            </div>
-            <div class="news-grid" id="gridCinema"></div>
-        </section>
-
     </main>
 
     <footer>
@@ -517,43 +491,120 @@
         // CARICAMENTO DA SUPABASE
         async function caricaCultura() {
             const { data: articoli, error } = await supabaseClient
-                .from("articoli")
-                .select("*")
-                .eq("pubblicato", true)
-                .eq("categoria", "Cultura")
-                .order("data_pubblicazione", { ascending: false });
+<script>
+    const SUPABASE_URL = "https://yfxlfajooflleztnnsxl.supabase.co";
+    const SUPABASE_KEY = "INSERISCI_LA_TUA_STESSA_PUBLISHABLE_KEY";
 
-            if (error) {
-                console.error("Errore Supabase:", error);
+    const supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
 
-                ["gridMusica", "gridArte", "gridLetteratura", "gridCinema"].forEach(id => {
-                    document.getElementById(id).textContent =
-                        "Impossibile caricare gli articoli.";
-                });
+    // DATA AUTOMATICA
+    document.getElementById("date").textContent =
+        new Date().toLocaleDateString("it-IT", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        });
 
-                return;
-            }
+    // FORMATTAZIONE DATA
+    function formattaData(data) {
+        if (!data) return "";
 
-            const normalizza = testo =>
-                (testo || "")
-                    .trim()
-                    .toLowerCase()
-                    .normalize("NFD")
-                    .replace(/[\u0300-\u036f]/g, "");
+        return new Date(data).toLocaleDateString("it-IT", {
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        });
+    }
 
-            const musica = articoli.filter(a => normalizza(a.sottocategoria) === "musica");
-            const arte = articoli.filter(a => normalizza(a.sottocategoria) === "arte");
-            const letteratura = articoli.filter(a => normalizza(a.sottocategoria) === "letteratura");
-            const cinema = articoli.filter(a => normalizza(a.sottocategoria) === "cinema");
+    // CREAZIONE SCHEDA
+    function creaScheda(articolo) {
+        const card = document.createElement("article");
+        card.className = "news-card";
 
-            mostraSezione(musica, "gridMusica", "countMusica");
-            mostraSezione(arte, "gridArte", "countArte");
-            mostraSezione(letteratura, "gridLetteratura", "countLetteratura");
-            mostraSezione(cinema, "gridCinema", "countCinema");
+        if (articolo.immagine) {
+            const image = document.createElement("img");
+            image.src = articolo.immagine;
+            image.alt = articolo.titolo || "Immagine articolo";
+            image.loading = "lazy";
+            card.appendChild(image);
         }
 
-        caricaCultura();
-    </script>
+        const content = document.createElement("div");
+        content.className = "news-content";
+
+        const category = document.createElement("div");
+        category.className = "category";
+        category.textContent = "Cultura";
+
+        const title = document.createElement("h3");
+        title.textContent = articolo.titolo || "Senza titolo";
+
+        const description = document.createElement("p");
+        description.textContent = articolo.descrizione || "";
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        meta.textContent = formattaData(articolo.data_pubblicazione);
+
+        if (articolo.autore) {
+            meta.textContent += " · " + articolo.autore;
+        }
+
+        const link = document.createElement("a");
+        link.className = "read-more";
+        link.href = "articolo.html?id=" + encodeURIComponent(articolo.id);
+        link.textContent = "Leggi l'articolo →";
+
+        content.append(category, title, description, meta, link);
+        card.appendChild(content);
+
+        return card;
+    }
+
+    // CARICAMENTO ARTICOLI
+    async function caricaCultura() {
+        const newsGrid = document.getElementById("newsGrid");
+        const articleCount = document.getElementById("articleCount");
+
+        const { data: articoli, error } = await supabaseClient
+            .from("articoli")
+            .select("*")
+            .eq("pubblicato", true)
+            .eq("categoria", "Cultura")
+            .order("data_pubblicazione", { ascending: false });
+
+        if (error) {
+            console.error("Errore Supabase:", error);
+            newsGrid.textContent = "Impossibile caricare gli articoli.";
+            articleCount.textContent = "";
+            return;
+        }
+
+        newsGrid.replaceChildren();
+
+        articleCount.textContent =
+            articoli.length +
+            (articoli.length === 1 ? " articolo" : " articoli");
+
+        if (articoli.length === 0) {
+            const empty = document.createElement("div");
+            empty.className = "empty-message";
+            empty.textContent = "Non ci sono ancora articoli in questa categoria.";
+            newsGrid.appendChild(empty);
+            return;
+        }
+
+        articoli.forEach(articolo => {
+            newsGrid.appendChild(creaScheda(articolo));
+        });
+    }
+
+    caricaCultura();
+</script>
 
 </body>
 </html>
