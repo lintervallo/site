@@ -911,7 +911,7 @@ async function caricaArticoli() {
     // GRIGLIA DELLE NOTIZIE
     newsGrid.replaceChildren();
 
-    articoli.forEach(articolo => {
+    articoli.slice(0, 6).forEach(articolo => {
         const card = document.createElement("article");
         card.className = "news-card";
 
