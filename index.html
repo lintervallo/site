@@ -783,17 +783,6 @@ href="https://sibforms.com/forms/end-form/build/sib-styles.css">
                 year: "numeric"
             });
 
-        // Ricerca delle notizie
-        const searchInput = document.getElementById("searchInput");
-        searchInput.addEventListener("input", function() {
-            const query = this.value.toLowerCase();
-            const newsCards = document.querySelectorAll(".news-card");
-            
-            newsCards.forEach(card => {
-                const text = card.textContent.toLowerCase();
-                card.style.display = text.includes(query) ? "" : "none";
-                });
-        });
     </script>
 
 <script>
@@ -908,10 +897,8 @@ async function caricaArticoli() {
         sideNews.appendChild(card);
     });
 
-    // GRIGLIA DELLE NOTIZIE
-    newsGrid.replaceChildren();
-
-    articoli.slice(0, 6).forEach(articolo => {
+       // GRIGLIA DELLE NOTIZIE
+    function creaCard(articolo) {
         const card = document.createElement("article");
         card.className = "news-card";
 
@@ -939,9 +926,45 @@ async function caricaArticoli() {
 
         content.append(category, title, description, link);
         card.append(img, content);
-        newsGrid.appendChild(card);
-    });
+        return card;
+    }
 
+    // Toglie maiuscole e accenti, così "attualita" trova "Attualità"
+    function semplifica(testo) {
+        return testo
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function mostraGriglia(lista, messaggioVuoto) {
+        newsGrid.replaceChildren();
+        if (lista.length === 0) {
+            newsGrid.textContent = messaggioVuoto;
+            return;
+        }
+        lista.forEach(a => newsGrid.appendChild(creaCard(a)));
+    }
+
+    // All'apertura della pagina: solo gli ultimi 6 articoli
+    mostraGriglia(articoli.slice(0, 6), "");
+
+    // Ricerca: cerca tra TUTTI gli articoli, non solo i 6 visibili
+    document.getElementById("searchInput").addEventListener("input", function () {
+        const ricerca = semplifica(this.value.trim());
+
+        if (ricerca === "") {
+            mostraGriglia(articoli.slice(0, 6), "");
+            return;
+        }
+
+        const trovati = articoli.filter(a =>
+            semplifica([a.titolo, a.descrizione, a.categoria].join(" ")).includes(ricerca)
+        );
+
+        mostraGriglia(trovati, "Nessun articolo trovato.");
+    });
+    
     // ULTIME NOTIZIE
     latestNews.replaceChildren();
 
