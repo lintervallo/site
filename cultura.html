@@ -4,10 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Le notizie di politica nazionale e internazionale su L'Intervallo.">
+    <meta name="description" content="Musica, arte, letteratura e cinema su L'Intervallo.">
     <title>Cultura | L'INTERVALLO</title>
 
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root {
@@ -87,6 +89,35 @@
             color: var(--red);
         }
 
+        .culture-menu {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 17px 15px;
+            border-bottom: 1px solid var(--border);
+            background: #eeede9;
+        }
+
+        .culture-menu a {
+            padding: 9px 18px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            border: 1px solid transparent;
+            transition: .2s;
+        }
+
+        .culture-menu a:hover {
+            color: var(--red);
+        }
+
+        .culture-menu a.active {
+            background: var(--black);
+            color: white;
+        }
+
         .container {
             max-width: 1200px;
             margin: 40px auto;
@@ -106,7 +137,7 @@
         .category-header {
             border-bottom: 2px solid var(--black);
             padding-bottom: 25px;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
         }
 
         .eyebrow {
@@ -132,17 +163,23 @@
             max-width: 650px;
         }
 
+        .culture-section {
+            margin-bottom: 55px;
+        }
+
         .articles-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 22px;
             gap: 15px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
         }
 
         .articles-info h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 25px;
+            font-size: 27px;
         }
 
         .article-count {
@@ -154,7 +191,6 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 25px;
-            margin-bottom: 60px;
         }
 
         .news-card {
@@ -224,6 +260,16 @@
             color: #921f1f;
         }
 
+        .empty-message {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 30px;
+            text-align: center;
+            color: var(--gray);
+            grid-column: 1 / -1;
+            font-size: 13px;
+        }
+
         footer {
             background: #111;
             color: white;
@@ -269,6 +315,14 @@
                 align-items: flex-start;
                 flex-direction: column;
             }
+
+            .culture-menu {
+                gap: 4px;
+            }
+
+            .culture-menu a {
+                padding: 9px 11px;
+            }
         }
     </style>
 </head>
@@ -295,6 +349,14 @@
         <a href="cultura.html" class="active">Cultura</a>
     </nav>
 
+    <div class="culture-menu">
+        <a href="cultura.html" class="active">Tutte</a>
+        <a href="musica.html">Musica</a>
+        <a href="arte.html">Arte</a>
+        <a href="letteratura.html">Letteratura</a>
+        <a href="cinema.html">Cinema</a>
+    </div>
+
     <main class="container">
 
         <div class="breadcrumb">
@@ -305,22 +367,42 @@
             <div class="eyebrow">LE NOSTRE CATEGORIE</div>
             <h1>Cultura</h1>
             <p>
-                Istituzioni, decisioni pubbliche, governi e partecipazione
-                democratica. Uno spazio per comprendere le dinamiche
-                politiche italiane e internazionali, attraverso
-                informazione e approfondimento.
+                Musica, arte, letteratura e cinema.
+                Idee, opere e protagonisti che raccontano
+                il mondo della cultura contemporanea.
             </p>
         </section>
 
-        <section>
-
+        <section class="culture-section">
             <div class="articles-info">
-                <h2>Tutti gli articoli</h2>
-                <span class="article-count" id="articleCount"></span>
+                <h2>Musica</h2>
+                <span class="article-count" id="countMusica">Caricamento...</span>
             </div>
+            <div class="news-grid" id="gridMusica"></div>
+        </section>
 
-            <div class="news-grid" id="newsGrid"></div>
+        <section class="culture-section">
+            <div class="articles-info">
+                <h2>Arte</h2>
+                <span class="article-count" id="countArte">Caricamento...</span>
+            </div>
+            <div class="news-grid" id="gridArte"></div>
+        </section>
 
+        <section class="culture-section">
+            <div class="articles-info">
+                <h2>Letteratura</h2>
+                <span class="article-count" id="countLetteratura">Caricamento...</span>
+            </div>
+            <div class="news-grid" id="gridLetteratura"></div>
+        </section>
+
+        <section class="culture-section">
+            <div class="articles-info">
+                <h2>Cinema</h2>
+                <span class="article-count" id="countCinema">Caricamento...</span>
+            </div>
+            <div class="news-grid" id="gridCinema"></div>
         </section>
 
     </main>
@@ -333,91 +415,144 @@
     </footer>
 
     <script>
+        const SUPABASE_URL = "https://yfxlfajooflleztnnsxl.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_mCQoLQm_2fa9cA6GpmO53A_SpSpaN87";
+
+        const supabaseClient = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
 
         // DATA AUTOMATICA
-
-        const today = new Date();
-
         document.getElementById("date").textContent =
-            today.toLocaleDateString("it-IT", {
+            new Date().toLocaleDateString("it-IT", {
                 weekday: "long",
                 day: "numeric",
                 month: "long",
                 year: "numeric"
             });
 
+        // FORMATTAZIONE DATA ARTICOLO
+        function formattaData(data) {
+            if (!data) return "";
 
-        // ARTICOLI DELLA CATEGORIA CULTURA
-
-        const articles = [
-
-            {
-                title: "Le sfide della politica contemporanea",
-                description: "Istituzioni, rappresentanza e trasformazioni sociali: uno sguardo sulle questioni che caratterizzano la politica di oggi.",
-                image: "https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=700",
-                date: "L'INTERVALLO",
-                readingTime: "5 MIN DI LETTURA",
-                link: "#"
-            },
-
-        ];
-
-
-        // CREAZIONE AUTOMATICA DELLE SCHEDE
-
-        const newsGrid = document.getElementById("newsGrid");
-
-        document.getElementById("articleCount").textContent =
-            articles.length + (articles.length === 1 ? " articolo" : " articoli");
-
-        if (articles.length === 0) {
-
-            newsGrid.innerHTML =
-                '<div style="background:white; padding:35px; text-align:center; color:#777; grid-column:1/-1;">Non ci sono ancora articoli in questa categoria.</div>';
-
-        } else {
-
-            articles.forEach(article => {
-
-                const card = document.createElement("article");
-                card.className = "news-card";
-
-                const image = document.createElement("img");
-                image.src = article.image;
-                image.alt = article.title;
-                image.loading = "lazy";
-
-                const content = document.createElement("div");
-                content.className = "news-content";
-
-                const category = document.createElement("div");
-                category.className = "category";
-                category.textContent = "Cultura";
-
-                const title = document.createElement("h3");
-                title.textContent = article.title;
-
-                const description = document.createElement("p");
-                description.textContent = article.description;
-
-                const meta = document.createElement("div");
-                meta.className = "meta";
-                meta.textContent = article.date + " · " + article.readingTime;
-
-                const link = document.createElement("a");
-                link.className = "read-more";
-                link.href = article.link;
-                link.textContent = "Leggi l'articolo →";
-
-                content.append(category, title, description, meta, link);
-                card.append(image, content);
-
-                newsGrid.appendChild(card);
-
+            return new Date(data).toLocaleDateString("it-IT", {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
             });
-
         }
 
+        // CREAZIONE SCHEDE
+        function creaScheda(articolo) {
+            const card = document.createElement("article");
+            card.className = "news-card";
+
+            if (articolo.immagine) {
+                const image = document.createElement("img");
+                image.src = articolo.immagine;
+                image.alt = articolo.titolo || "Immagine articolo";
+                image.loading = "lazy";
+                card.appendChild(image);
+            }
+
+            const content = document.createElement("div");
+            content.className = "news-content";
+
+            const category = document.createElement("div");
+            category.className = "category";
+            category.textContent = articolo.sottocategoria || "Cultura";
+
+            const title = document.createElement("h3");
+            title.textContent = articolo.titolo || "Senza titolo";
+
+            const description = document.createElement("p");
+            description.textContent = articolo.descrizione || "";
+
+            const meta = document.createElement("div");
+            meta.className = "meta";
+
+            const data = formattaData(articolo.data_pubblicazione);
+            meta.textContent = data;
+
+            if (articolo.autore) {
+                meta.textContent += " · " + articolo.autore;
+            }
+
+            const link = document.createElement("a");
+            link.className = "read-more";
+            link.href = "articolo.html?id=" + encodeURIComponent(articolo.id);
+            link.textContent = "Leggi l'articolo →";
+
+            content.append(category, title, description, meta, link);
+            card.appendChild(content);
+
+            return card;
+        }
+
+        // CARICAMENTO DI OGNI SEZIONE
+        function mostraSezione(articoli, gridId, countId) {
+            const grid = document.getElementById(gridId);
+            const count = document.getElementById(countId);
+
+            grid.replaceChildren();
+
+            count.textContent =
+                articoli.length +
+                (articoli.length === 1 ? " articolo" : " articoli");
+
+            if (articoli.length === 0) {
+                const empty = document.createElement("div");
+                empty.className = "empty-message";
+                empty.textContent = "Non ci sono ancora articoli in questa sezione.";
+                grid.appendChild(empty);
+                return;
+            }
+
+            articoli.forEach(articolo => {
+                grid.appendChild(creaScheda(articolo));
+            });
+        }
+
+        // CARICAMENTO DA SUPABASE
+        async function caricaCultura() {
+            const { data: articoli, error } = await supabaseClient
+                .from("articoli")
+                .select("*")
+                .eq("pubblicato", true)
+                .eq("categoria", "Cultura")
+                .order("data_pubblicazione", { ascending: false });
+
+            if (error) {
+                console.error("Errore Supabase:", error);
+
+                ["gridMusica", "gridArte", "gridLetteratura", "gridCinema"].forEach(id => {
+                    document.getElementById(id).textContent =
+                        "Impossibile caricare gli articoli.";
+                });
+
+                return;
+            }
+
+            const normalizza = testo =>
+                (testo || "")
+                    .trim()
+                    .toLowerCase()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "");
+
+            const musica = articoli.filter(a => normalizza(a.sottocategoria) === "musica");
+            const arte = articoli.filter(a => normalizza(a.sottocategoria) === "arte");
+            const letteratura = articoli.filter(a => normalizza(a.sottocategoria) === "letteratura");
+            const cinema = articoli.filter(a => normalizza(a.sottocategoria) === "cinema");
+
+            mostraSezione(musica, "gridMusica", "countMusica");
+            mostraSezione(arte, "gridArte", "countArte");
+            mostraSezione(letteratura, "gridLetteratura", "countLetteratura");
+            mostraSezione(cinema, "gridCinema", "countCinema");
+        }
+
+        caricaCultura();
     </script>
 
 </body>
