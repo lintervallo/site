@@ -566,63 +566,75 @@
                   .update({ in_evidenza: false })
                   .eq("in_evidenza", true);
 
-          if (articoloInModifica !== null) {
-              const { data: articoloOriginale, error: erroreOriginale } =
-                  await supabaseClient
-                  .from("articoli")
-                  .select("data_pubblicazione, pubblicato")
-                  .eq("id", articoloInModifica)
-                  .single();
-              
-              if (erroreOriginale) throw erroreOriginale;
-              if (articoloOriginale.pubblicato && pubblicato) {
-                  articolo.data_pubblicazione = articoloOriginale.data_pubblicazione;
-              } else if (!articoloOriginale.pubblicato && pubblicato) {
-                  articolo.data_pubblicazione = new Date().toISOString();
-              } else {
-                  articolo.data_pubblicazione = null;
-              }
           
-        // Se stiamo modificando un articolo, non tocchiamo quello stesso articolo
-              if (articoloInModifica !== null) {
-                  query = query.neq("id", articoloInModifica);
-              }
-              
-              const { error: erroreEvidenza } = await query;
-              if (erroreEvidenza) throw erroreEvidenza;
-          }
+// Gestione della data di pubblicazione
+if (articoloInModifica !== null) {
+    const { data: articoloOriginale, error: erroreOriginale } =
+        await supabaseClient
+            .from("articoli")
+            .select("data_pubblicazione, pubblicato")
+            .eq("id", articoloInModifica)
+            .single();
 
-       // Salva o aggiorna l'articolo
-            if (articoloInModifica !== null) {
-                const { error } = await supabaseClient
-                    .from("articoli")
-                    .update(articolo)
-                    .eq("id", articoloInModifica);
-                if (error) throw error;
-            } else {
-                articolo.data_pubblicazione = pubblicato
-                    ? new Date().toISOString()
-                    : null;
-                
-                const { error } = await supabaseClient
-                    .from("articoli")
-                    .insert([articolo]);
-                
-                if (error) throw error;
-            }
-            
-            mostraMessaggio(pubblicato ? "Articolo pubblicato!" : "Bozza salvata!");
-            articleForm.reset();
-            resetModifica();
-            await caricaListaArticoli();
+    if (erroreOriginale) throw erroreOriginale;
 
-        } catch (error) {
-            console.error(error);
-            mostraMessaggio("Errore: " + error.message, true);
-        } finally {
-            bottone.disabled = false;
-        }
+    if (articoloOriginale.pubblicato && pubblicato) {
+        articolo.data_pubblicazione = articoloOriginale.data_pubblicazione;
+    } else if (!articoloOriginale.pubblicato && pubblicato) {
+        articolo.data_pubblicazione = new Date().toISOString();
+    } else {
+        articolo.data_pubblicazione = null;
     }
+} else {
+    articolo.data_pubblicazione = pubblicato
+        ? new Date().toISOString()
+        : null;
+}
+
+// Gestione articolo in evidenza
+if (articolo.in_evidenza) {
+    let query = supabaseClient
+        .from("articoli")
+        .update({ in_evidenza: false })
+        .eq("in_evidenza", true);
+
+    if (articoloInModifica !== null) {
+        query = query.neq("id", articoloInModifica);
+    }
+
+    const { error: erroreEvidenza } = await query;
+    if (erroreEvidenza) throw erroreEvidenza;
+}
+
+// Salva o aggiorna l'articolo
+if (articoloInModifica !== null) {
+    const { error } = await supabaseClient
+        .from("articoli")
+        .update(articolo)
+        .eq("id", articoloInModifica);
+
+    if (error) throw error;
+} else {
+    const { error } = await supabaseClient
+        .from("articoli")
+        .insert([articolo]);
+
+    if (error) throw error;
+}
+
+mostraMessaggio(pubblicato ? "Articolo pubblicato!" : "Bozza salvata!");
+articleForm.reset();
+resetModifica();
+await caricaListaArticoli();
+
+} catch (error) {
+    console.error(error);
+    mostraMessaggio("Errore: " + error.message, true);
+} finally {
+    bottone.disabled = false;
+}
+}
+
 
     // PULSANTI SALVATAGGIO
     articleForm.addEventListener("submit", async (e) => {
