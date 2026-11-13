@@ -556,6 +556,12 @@ async function caricaPolitica() {
 
         return sottocategoria.includes("internazionale");
     });
+    alert(
+        "Articoli ricevuti: " + articoli.length +
+        "\nArticoli internazionali: " + internationalArticles.length +
+        "\nSottocategorie: " +
+        articoli.map(a => a.sottocategoria).join(", ")
+    );
 
     // MOSTRA LE DUE SEZIONI
 
