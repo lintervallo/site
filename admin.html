@@ -600,6 +600,10 @@
                     .eq("id", articoloInModifica);
                 if (error) throw error;
             } else {
+                articolo.data_pubblicazione = pubblicato
+                    ? new Date().toISOString()
+                    : null;
+                
                 const { error } = await supabaseClient
                     .from("articoli")
                     .insert([articolo]);
