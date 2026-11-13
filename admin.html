@@ -524,115 +524,107 @@
     }
 
     // SALVATAGGIO ARTICOLO
-    async function salvaArticolo(pubblicato) {
-        const bottone = document.getElementById(
-            pubblicato ? "publishButton" : "draftButton"
-        );
+    
+async function salvaArticolo(pubblicato) {
+    const bottone = document.getElementById(
+        pubblicato ? "publishButton" : "draftButton"
+    );
 
-        bottone.disabled = true;
+    bottone.disabled = true;
 
-        try {
-            let urlImmagine = immagineAttuale;
-            const file = document.getElementById("immagine").files[0];
+    try {
+        let urlImmagine = immagineAttuale;
+        const file = document.getElementById("immagine").files[0];
 
-            if (file) {
-                if (!file.type.startsWith("image/")) {
-                    throw new Error("Il file selezionato non è un'immagine.");
-                }
-
-                if (file.size > 5 * 1024 * 1024) {
-                    throw new Error("L'immagine supera il limite di 5 MB.");
-                }
-
-                urlImmagine = await caricaImmagine(file);
+        if (file) {
+            if (!file.type.startsWith("image/")) {
+                throw new Error("Il file selezionato non è un'immagine.");
             }
 
+            if (file.size > 5 * 1024 * 1024) {
+                throw new Error("L'immagine supera il limite di 5 MB.");
+            }
+
+            urlImmagine = await caricaImmagine(file);
+        }
+
         const articolo = {
-    titolo: document.getElementById("titolo").value.trim(),
-    autore: document.getElementById("autore").value.trim() || null,
-    in_evidenza: document.getElementById("inEvidenza").checked,
-    descrizione: document.getElementById("descrizione").value.trim(),
-    categoria: document.getElementById("categoria").value,
-    sottocategoria: document.getElementById("sottocategoria").value.trim() || null,
-    contenuto: document.getElementById("contenuto").value.trim(),
-    immagine: urlImmagine,
-    pubblicato: pubblicato,
-};
+            titolo: document.getElementById("titolo").value.trim(),
+            autore: document.getElementById("autore").value.trim() || null,
+            in_evidenza: document.getElementById("inEvidenza").checked,
+            descrizione: document.getElementById("descrizione").value.trim(),
+            categoria: document.getElementById("categoria").value,
+            sottocategoria: document.getElementById("sottocategoria").value.trim() || null,
+            contenuto: document.getElementById("contenuto").value.trim(),
+            immagine: urlImmagine,
+            pubblicato: pubblicato
+        };
 
-          // Se questo articolo va in evidenza, togli il contrassegno agli altri
-          if (articolo.in_evidenza) {
-              let query = supabaseClient
-                  .from("articoli")
-                  .update({ in_evidenza: false })
-                  .eq("in_evidenza", true);
+        // Conserva o assegna la data di pubblicazione
+        if (articoloInModifica !== null) {
+            const { data: originale, error } = await supabaseClient
+                .from("articoli")
+                .select("data_pubblicazione, pubblicato")
+                .eq("id", articoloInModifica)
+                .single();
 
-          
-// Gestione della data di pubblicazione
-if (articoloInModifica !== null) {
-    const { data: articoloOriginale, error: erroreOriginale } =
-        await supabaseClient
-            .from("articoli")
-            .select("data_pubblicazione, pubblicato")
-            .eq("id", articoloInModifica)
-            .single();
+            if (error) throw error;
 
-    if (erroreOriginale) throw erroreOriginale;
+            if (originale.pubblicato && pubblicato) {
+                articolo.data_pubblicazione = originale.data_pubblicazione;
+            } else if (pubblicato) {
+                articolo.data_pubblicazione = new Date().toISOString();
+            } else {
+                articolo.data_pubblicazione = null;
+            }
+        } else {
+            articolo.data_pubblicazione = pubblicato
+                ? new Date().toISOString()
+                : null;
+        }
 
-    if (articoloOriginale.pubblicato && pubblicato) {
-        articolo.data_pubblicazione = articoloOriginale.data_pubblicazione;
-    } else if (!articoloOriginale.pubblicato && pubblicato) {
-        articolo.data_pubblicazione = new Date().toISOString();
-    } else {
-        articolo.data_pubblicazione = null;
+        // Gestione articolo in evidenza
+        if (articolo.in_evidenza) {
+            let query = supabaseClient
+                .from("articoli")
+                .update({ in_evidenza: false })
+                .eq("in_evidenza", true);
+
+            if (articoloInModifica !== null) {
+                query = query.neq("id", articoloInModifica);
+            }
+
+            const { error } = await query;
+            if (error) throw error;
+        }
+
+        // Salva o aggiorna
+        if (articoloInModifica !== null) {
+            const { error } = await supabaseClient
+                .from("articoli")
+                .update(articolo)
+                .eq("id", articoloInModifica);
+
+            if (error) throw error;
+        } else {
+            const { error } = await supabaseClient
+                .from("articoli")
+                .insert([articolo]);
+
+            if (error) throw error;
+        }
+
+        mostraMessaggio(pubblicato ? "Articolo pubblicato!" : "Bozza salvata!");
+        articleForm.reset();
+        resetModifica();
+        await caricaListaArticoli();
+
+    } catch (error) {
+        console.error(error);
+        mostraMessaggio("Errore: " + error.message, true);
+    } finally {
+        bottone.disabled = false;
     }
-} else {
-    articolo.data_pubblicazione = pubblicato
-        ? new Date().toISOString()
-        : null;
-}
-
-// Gestione articolo in evidenza
-if (articolo.in_evidenza) {
-    let query = supabaseClient
-        .from("articoli")
-        .update({ in_evidenza: false })
-        .eq("in_evidenza", true);
-
-    if (articoloInModifica !== null) {
-        query = query.neq("id", articoloInModifica);
-    }
-
-    const { error: erroreEvidenza } = await query;
-    if (erroreEvidenza) throw erroreEvidenza;
-}
-
-// Salva o aggiorna l'articolo
-if (articoloInModifica !== null) {
-    const { error } = await supabaseClient
-        .from("articoli")
-        .update(articolo)
-        .eq("id", articoloInModifica);
-
-    if (error) throw error;
-} else {
-    const { error } = await supabaseClient
-        .from("articoli")
-        .insert([articolo]);
-
-    if (error) throw error;
-}
-
-mostraMessaggio(pubblicato ? "Articolo pubblicato!" : "Bozza salvata!");
-articleForm.reset();
-resetModifica();
-await caricaListaArticoli();
-
-} catch (error) {
-    console.error(error);
-    mostraMessaggio("Errore: " + error.message, true);
-} finally {
-    bottone.disabled = false;
-}
 }
 
 
