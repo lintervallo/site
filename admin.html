@@ -557,7 +557,6 @@
     contenuto: document.getElementById("contenuto").value.trim(),
     immagine: urlImmagine,
     pubblicato: pubblicato,
-    data_pubblicazione: pubblicato ? new Date().toISOString() : null
 };
 
           // Se questo articolo va in evidenza, togli il contrassegno agli altri
@@ -566,6 +565,23 @@
                   .from("articoli")
                   .update({ in_evidenza: false })
                   .eq("in_evidenza", true);
+
+          if (articoloInModifica !== null) {
+              const { data: articoloOriginale, error: erroreOriginale } =
+                  await supabaseClient
+                  .from("articoli")
+                  .select("data_pubblicazione, pubblicato")
+                  .eq("id", articoloInModifica)
+                  .single();
+              
+              if (erroreOriginale) throw erroreOriginale;
+              if (articoloOriginale.pubblicato && pubblicato) {
+                  articolo.data_pubblicazione = articoloOriginale.data_pubblicazione;
+              } else if (!articoloOriginale.pubblicato && pubblicato) {
+                  articolo.data_pubblicazione = new Date().toISOString();
+              } else {
+                  articolo.data_pubblicazione = null;
+              }
           
         // Se stiamo modificando un articolo, non tocchiamo quello stesso articolo
               if (articoloInModifica !== null) {
