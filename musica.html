@@ -4,9 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Musica - L'INTERVALLO</title>
+    <meta name="description" content="Le notizie, gli artisti e le novità dal mondo della musica su L'Intervallo.">
+    <title>Musica | L'INTERVALLO</title>
 
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root {
@@ -37,58 +40,52 @@
         .topbar {
             background: var(--black);
             color: white;
-            padding: 9px 5%;
+            padding: 9px 7%;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            font-size: 10px;
-            text-transform: uppercase;
+            font-size: 11px;
             letter-spacing: 1px;
         }
 
-        .topbar span:last-child {
-            color: #ccc;
-        }
-
-        .masthead {
+        header {
             text-align: center;
-            padding: 32px 15px 25px;
+            padding: 28px 15px 24px;
             border-bottom: 1px solid var(--border);
         }
 
-        .masthead h1 {
+        .logo {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(38px, 6vw, 58px);
+            font-size: clamp(42px, 8vw, 76px);
             font-weight: 800;
-            letter-spacing: -2px;
+            letter-spacing: -4px;
         }
 
-        .masthead p {
-            color: var(--gray);
+        .subtitle {
             font-size: 11px;
-            margin-top: 7px;
-            letter-spacing: 1px;
+            letter-spacing: 4px;
+            color: var(--gray);
+            margin-top: 5px;
+            text-transform: uppercase;
         }
 
-        .main-nav {
+        nav {
             display: flex;
             justify-content: center;
+            gap: 32px;
+            padding: 17px;
+            border-bottom: 2px solid var(--black);
             flex-wrap: wrap;
-            gap: 28px;
-            padding: 16px 15px;
-            border-bottom: 1px solid var(--border);
-            background: var(--light);
         }
 
-        .main-nav a {
-            font-size: 11px;
-            font-weight: 800;
+        nav a {
+            font-size: 12px;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: .5px;
             transition: color .2s;
         }
 
-        .main-nav a:hover {
+        nav a:hover,
+        nav a.active {
             color: var(--red);
         }
 
@@ -122,15 +119,15 @@
         }
 
         .container {
-            max-width: 1180px;
-            margin: 0 auto;
-            padding: 30px 25px 70px;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 25px;
         }
 
         .breadcrumb {
             font-size: 11px;
             color: var(--gray);
-            margin-bottom: 28px;
+            margin-bottom: 25px;
         }
 
         .breadcrumb a:hover {
@@ -140,46 +137,54 @@
         .category-header {
             border-bottom: 2px solid var(--black);
             padding-bottom: 25px;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
         }
 
         .eyebrow {
             color: var(--red);
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 800;
             letter-spacing: 2px;
+            text-transform: uppercase;
             margin-bottom: 10px;
         }
 
-        .category-header h2 {
+        .category-header h1 {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(34px, 5vw, 48px);
-            margin-bottom: 10px;
+            font-size: clamp(38px, 6vw, 58px);
+            line-height: 1.1;
+            margin-bottom: 12px;
         }
 
         .category-header p {
             color: var(--gray);
             font-size: 14px;
             line-height: 1.7;
-            max-width: 600px;
+            max-width: 650px;
+        }
+
+        .culture-section {
+            margin-bottom: 55px;
         }
 
         .articles-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 15px;
             margin-bottom: 22px;
+            gap: 15px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
         }
 
-        .articles-info h3 {
+        .articles-info h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 23px;
+            font-size: 27px;
         }
 
         .article-count {
-            font-size: 11px;
             color: var(--gray);
+            font-size: 12px;
         }
 
         .news-grid {
@@ -191,21 +196,23 @@
         .news-card {
             background: white;
             border: 1px solid var(--border);
+            transition: transform .2s;
             display: flex;
             flex-direction: column;
-            min-width: 0;
+        }
+
+        .news-card:hover {
+            transform: translateY(-4px);
         }
 
         .news-card img {
             width: 100%;
-            aspect-ratio: 16 / 10;
+            height: 210px;
             object-fit: cover;
-            display: block;
-            background: #e5e3de;
         }
 
         .news-content {
-            padding: 19px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             flex: 1;
@@ -217,40 +224,40 @@
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 9px;
+            margin-bottom: 10px;
         }
 
-        .news-content h4 {
+        .news-content h3 {
             font-family: 'Playfair Display', serif;
-            font-size: 20px;
+            font-size: 21px;
             line-height: 1.3;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .news-content p {
             color: var(--gray);
-            font-size: 12px;
+            font-size: 13px;
             line-height: 1.7;
-            margin-bottom: 15px;
         }
 
         .meta {
             color: var(--gray);
             font-size: 10px;
-            margin-top: auto;
-            padding-top: 8px;
+            margin-top: 15px;
         }
 
         .read-more {
             display: inline-block;
-            color: var(--red);
+            margin-top: auto;
+            padding-top: 20px;
             font-size: 11px;
             font-weight: 800;
-            margin-top: 15px;
+            color: var(--red);
+            text-transform: uppercase;
         }
 
         .read-more:hover {
-            text-decoration: underline;
+            color: #921f1f;
         }
 
         .empty-message {
@@ -264,386 +271,91 @@
         }
 
         footer {
-            background: var(--black);
+            background: #111;
             color: white;
-            padding: 35px 5%;
+            padding: 35px 7%;
             text-align: center;
+            margin-top: 50px;
         }
 
-        footer h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 25px;
-            margin-bottom: 8px;
+        footer .logo {
+            font-size: 40px;
         }
 
         footer p {
-            color: #aaa;
+            color: #999;
             font-size: 11px;
+            margin-top: 12px;
         }
 
-        @media (max-width: 800px) {
+        @media(max-width: 850px) {
             .news-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-
-            .main-nav {
-                gap: 17px;
-            }
         }
 
-        @media (max-width: 550px) {
+        @media(max-width: 600px) {
             .news-grid {
                 grid-template-columns: 1fr;
             }
 
-            .container {
-                padding: 25px 16px 50px;
+            nav {
+                gap: 15px;
             }
 
             .topbar {
-                font-size: 8px;
-<style>  
-    :root {  
-        --black: #171717;  
-        --red: #c73535;  
-        --gray: #777;  
-        --light: #f5f4f1;  
-        --border: #deded9;  
-    }  
+                font-size: 9px;
+            }
 
-    * {  
-        margin: 0;  
-        padding: 0;  
-        box-sizing: border-box;  
-    }  
+            .container {
+                padding: 0 17px;
+            }
 
-    body {  
-        background: var(--light);  
-        color: var(--black);  
-        font-family: 'DM Sans', sans-serif;  
-    }  
+            .articles-info {
+                align-items: flex-start;
+                flex-direction: column;
+            }
 
-    a {  
-        color: inherit;  
-        text-decoration: none;  
-    }  
+            .culture-menu {
+                gap: 4px;
+            }
 
-    .topbar {  
-        background: var(--black);  
-        color: white;  
-        padding: 9px 7%;  
-        display: flex;  
-        justify-content: space-between;  
-        font-size: 11px;  
-        letter-spacing: 1px;  
-    }  
+            .culture-menu a {
+                padding: 9px 11px;
+            }
+        }
+    </style>
+</head>
 
-    header {  
-        text-align: center;  
-        padding: 28px 15px 24px;  
-        border-bottom: 1px solid var(--border);  
-    }  
+<body>
 
-    .logo {  
-        font-family: 'Playfair Display', serif;  
-        font-size: clamp(42px, 8vw, 76px);  
-        font-weight: 800;  
-        letter-spacing: -4px;  
-    }  
+    <div class="topbar">
+        <span>IL GIORNALE DIGITALE INDIPENDENTE</span>
+        <span id="date"></span>
+    </div>
 
-    .subtitle {  
-        font-size: 11px;  
-        letter-spacing: 4px;  
-        color: var(--gray);  
-        margin-top: 5px;  
-        text-transform: uppercase;  
-    }  
+    <header>
+        <a href="index.html" class="logo">L'INTERVALLO</a>
+        <div class="subtitle">Prenditi una pausa e guarda il mondo da vicino</div>
+    </header>
 
-    nav {  
-        display: flex;  
-        justify-content: center;  
-        gap: 32px;  
-        padding: 17px;  
-        border-bottom: 2px solid var(--black);  
-        flex-wrap: wrap;  
-    }  
-
-    nav a {  
-        font-size: 12px;  
-        font-weight: 700;  
-        text-transform: uppercase;  
-        transition: color .2s;  
-    }  
-
-    nav a:hover,  
-    nav a.active {  
-        color: var(--red);  
-    }  
-
-    .culture-menu {  
-        display: flex;  
-        justify-content: center;  
-        gap: 10px;  
-        flex-wrap: wrap;  
-        padding: 17px 15px;  
-        border-bottom: 1px solid var(--border);  
-        background: #eeede9;  
-    }  
-
-    .culture-menu a {  
-        padding: 9px 18px;  
-        font-size: 11px;  
-        font-weight: 800;  
-        text-transform: uppercase;  
-        letter-spacing: .5px;  
-        border: 1px solid transparent;  
-        transition: .2s;  
-    }  
-
-    .culture-menu a:hover {  
-        color: var(--red);  
-    }  
-
-    .culture-menu a.active {  
-        background: var(--black);  
-        color: white;  
-    }  
-
-    .container {  
-        max-width: 1200px;  
-        margin: 40px auto;  
-        padding: 0 25px;  
-    }  
-
-    .breadcrumb {  
-        font-size: 11px;  
-        color: var(--gray);  
-        margin-bottom: 25px;  
-    }  
-
-    .breadcrumb a:hover {  
-        color: var(--red);  
-    }  
-
-    .category-header {  
-        border-bottom: 2px solid var(--black);  
-        padding-bottom: 25px;  
-        margin-bottom: 35px;  
-    }  
-
-    .eyebrow {  
-        color: var(--red);  
-        font-size: 11px;  
-        font-weight: 800;  
-        letter-spacing: 2px;  
-        text-transform: uppercase;  
-        margin-bottom: 10px;  
-    }  
-
-    .category-header h1 {  
-        font-family: 'Playfair Display', serif;  
-        font-size: clamp(38px, 6vw, 58px);  
-        line-height: 1.1;  
-        margin-bottom: 12px;  
-    }  
-
-    .category-header p {  
-        color: var(--gray);  
-        font-size: 14px;  
-        line-height: 1.7;  
-        max-width: 650px;  
-    }  
-
-    .culture-section {  
-        margin-bottom: 55px;  
-    }  
-
-    .articles-info {  
-        display: flex;  
-        justify-content: space-between;  
-        align-items: center;  
-        margin-bottom: 22px;  
-        gap: 15px;  
-        border-bottom: 1px solid var(--border);  
-        padding-bottom: 12px;  
-    }  
-
-    .articles-info h2 {  
-        font-family: 'Playfair Display', serif;  
-        font-size: 27px;  
-    }  
-
-    .article-count {  
-        color: var(--gray);  
-        font-size: 12px;  
-    }  
-
-    .news-grid {  
-        display: grid;  
-        grid-template-columns: repeat(3, 1fr);  
-        gap: 25px;  
-    }  
-
-    .news-card {  
-        background: white;  
-        border: 1px solid var(--border);  
-        transition: transform .2s;  
-        display: flex;  
-        flex-direction: column;  
-    }  
-
-    .news-card:hover {  
-        transform: translateY(-4px);  
-    }  
-
-    .news-card img {  
-        width: 100%;  
-        height: 210px;  
-        object-fit: cover;  
-    }  
-
-    .news-content {  
-        padding: 20px;  
-        display: flex;  
-        flex-direction: column;  
-        flex: 1;  
-    }  
-
-    .category {  
-        color: var(--red);  
-        font-size: 10px;  
-        font-weight: 800;  
-        text-transform: uppercase;  
-        letter-spacing: 1px;  
-        margin-bottom: 10px;  
-    }  
-
-    .news-content h3 {  
-        font-family: 'Playfair Display', serif;  
-        font-size: 21px;  
-        line-height: 1.3;  
-        margin-bottom: 12px;  
-    }  
-
-    .news-content p {  
-        color: var(--gray);  
-        font-size: 13px;  
-        line-height: 1.7;  
-    }  
-
-    .meta {  
-        color: var(--gray);  
-        font-size: 10px;  
-        margin-top: 15px;  
-    }  
-
-    .read-more {  
-        display: inline-block;  
-        margin-top: auto;  
-        padding-top: 20px;  
-        font-size: 11px;  
-        font-weight: 800;  
-        color: var(--red);  
-        text-transform: uppercase;  
-    }  
-
-    .read-more:hover {  
-        color: #921f1f;  
-    }  
-
-    .empty-message {  
-        background: white;  
-        border: 1px solid var(--border);  
-        padding: 30px;  
-        text-align: center;  
-        color: var(--gray);  
-        grid-column: 1 / -1;  
-        font-size: 13px;  
-    }  
-
-    footer {  
-        background: #111;  
-        color: white;  
-        padding: 35px 7%;  
-        text-align: center;  
-        margin-top: 50px;  
-    }  
-
-    footer .logo {  
-        font-size: 40px;  
-    }  
-
-    footer p {  
-        color: #999;  
-        font-size: 11px;  
-        margin-top: 12px;  
-    }  
-
-    @media(max-width: 850px) {  
-        .news-grid {  
-            grid-template-columns: repeat(2, 1fr);  
-        }  
-    }  
-
-    @media(max-width: 600px) {  
-        .news-grid {  
-            grid-template-columns: 1fr;  
-        }  
-
-        nav {  
-            gap: 15px;  
-        }  
-
-        .topbar {  
-            font-size: 9px;  
-        }  
-
-        .container {  
-            padding: 0 17px;  
-        }  
-
-        .articles-info {  
-            align-items: flex-start;  
-            flex-direction: column;  
-        }  
-
-        .culture-menu {  
-            gap: 4px;  
-        }  
-
-        .culture-menu a {  
-            padding: 9px 11px;  
-        }  
-    }  
-</style>
-
-</head>  <body>  <div class="topbar">  
-    <span>IL GIORNALE DIGITALE INDIPENDENTE</span>  
-    <span id="date"></span>  
-</div>  
-
-<header>  
-    <a href="index.html" class="logo">L'INTERVALLO</a>  
-    <div class="subtitle">Prenditi una pausa e guarda il mondo da vicino</div>  
-</header>  
-
-    <nav class="main-nav">
+    <nav>
         <a href="index.html">Home</a>
         <a href="attualita.html">Attualità</a>
         <a href="politica.html">Politica</a>
         <a href="mondo.html">Mondo</a>
         <a href="tecnologia.html">Tecnologia</a>
         <a href="sport.html">Sport</a>
-        <a href="cultura.html">Cultura</a>
+        <a href="cultura.html" class="active">Cultura</a>
     </nav>
 
-    <nav class="culture-menu">
+    <div class="culture-menu">
         <a href="cultura.html">Tutte</a>
         <a href="musica.html" class="active">Musica</a>
         <a href="arte.html">Arte</a>
         <a href="letteratura.html">Letteratura</a>
         <a href="cinema.html">Cinema</a>
-    </nav>
+    </div>
 
     <main class="container">
 
@@ -655,7 +367,7 @@
 
         <section class="category-header">
             <div class="eyebrow">CULTURA · MUSICA</div>
-            <h2>Musica</h2>
+            <h1>Musica</h1>
             <p>
                 Artisti, album, concerti e nuove sonorità.
                 Le storie e le idee che attraversano il mondo della musica.
@@ -664,7 +376,7 @@
 
         <section>
             <div class="articles-info">
-                <h3>Tutti gli articoli</h3>
+                <h2>Tutti gli articoli</h2>
                 <span class="article-count" id="articleCount">Caricamento...</span>
             </div>
 
@@ -674,23 +386,22 @@
     </main>
 
     <footer>
-        <h2>L'INTERVALLO</h2>
-        <p>Prenditi una pausa e guarda il mondo da vicino</p>
+        <a href="index.html" class="logo">L'INTERVALLO</a>
+        <p>Le notizie, senza rumore.</p>
+        <p>© 2026 L'Intervallo · Tutti i diritti riservati</p>
+        <p>Un progetto editoriale indipendente.</p>
     </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
         const SUPABASE_URL = "https://yfxlfajooflleztnnsxl.supabase.co";
-
-        // Inserisci qui la stessa publishable key usata negli altri file
-        const SUPABASE_KEY = "sb_publishable_mCQoLQm_2fa9cA6GpmO53A_SpSpaN87";
+        const SUPABASE_KEY = "INSERISCI_LA_TUA_STESSA_PUBLISHABLE_KEY";
 
         const supabaseClient = window.supabase.createClient(
             SUPABASE_URL,
             SUPABASE_KEY
         );
 
+        // DATA AUTOMATICA
         document.getElementById("date").textContent =
             new Date().toLocaleDateString("it-IT", {
                 weekday: "long",
@@ -699,6 +410,7 @@
                 year: "numeric"
             });
 
+        // FORMATTAZIONE DATA ARTICOLO
         function formattaData(data) {
             if (!data) return "";
 
@@ -709,6 +421,7 @@
             });
         }
 
+        // CREAZIONE SCHEDE
         function creaScheda(articolo) {
             const card = document.createElement("article");
             card.className = "news-card";
@@ -728,7 +441,7 @@
             category.className = "category";
             category.textContent = "Musica";
 
-            const title = document.createElement("h4");
+            const title = document.createElement("h3");
             title.textContent = articolo.titolo || "Senza titolo";
 
             const description = document.createElement("p");
@@ -736,7 +449,9 @@
 
             const meta = document.createElement("div");
             meta.className = "meta";
-            meta.textContent = formattaData(articolo.data_pubblicazione);
+
+            const data = formattaData(articolo.data_pubblicazione);
+            meta.textContent = data;
 
             if (articolo.autore) {
                 meta.textContent += " · " + articolo.autore;
@@ -753,6 +468,7 @@
             return card;
         }
 
+        // CARICAMENTO ARTICOLI MUSICA
         async function caricaMusica() {
             const newsGrid = document.getElementById("newsGrid");
             const articleCount = document.getElementById("articleCount");
@@ -781,8 +497,7 @@
             if (articoli.length === 0) {
                 const empty = document.createElement("div");
                 empty.className = "empty-message";
-                empty.textContent =
-                    "Non ci sono ancora articoli nella sezione Musica.";
+                empty.textContent = "Non ci sono ancora articoli in questa sezione.";
                 newsGrid.appendChild(empty);
                 return;
             }
