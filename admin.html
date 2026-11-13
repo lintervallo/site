@@ -317,8 +317,15 @@
                 </select>
 
                 <label for="sottocategoria">Sottocategoria</label>
-                <input type="text" id="sottocategoria" placeholder="Es. Politica interna, Calcio, Cinema...">
-
+                <input
+                    type="text"
+                    id="sottocategoria"
+                    list="sottocategorieSuggerite"
+                    placeholder="Seleziona o scrivi una sottocategoria..."
+                    >
+                <datalist id="sottocategorieSuggerite"></datalist>
+                <div class="hint">I suggerimenti cambiano in base alla categoria selezionata.</div>
+                
                 <label for="contenuto">Contenuto dell'articolo</label>
                 <textarea id="contenuto" required></textarea>
                 <div class="hint">Per ora il testo viene salvato come testo semplice.</div>
@@ -365,6 +372,39 @@
     let articoloInModifica = null;
     let immagineAttuale = null;
     let sessioneUtente = null;
+
+    // SUGGERIMENTI AUTOMATICI PER LE SOTTOCATEGORIE
+
+const categoriaSelect = document.getElementById("categoria");
+const sottocategoriaInput = document.getElementById("sottocategoria");
+const sottocategorieSuggerite = document.getElementById("sottocategorieSuggerite");
+
+const opzioniSottocategorie = {
+    "Cultura": ["Musica", "Arte", "Letteratura", "Cinema"],
+    "Politica": ["Politica interna", "Politica internazionale"]
+};
+
+function aggiornaSottocategorie() {
+    const categoria = categoriaSelect.value;
+    const opzioni = opzioniSottocategorie[categoria] || [];
+
+    sottocategorieSuggerite.replaceChildren();
+
+    opzioni.forEach(nome => {
+        const option = document.createElement("option");
+        option.value = nome;
+        sottocategorieSuggerite.appendChild(option);
+    });
+
+    sottocategoriaInput.placeholder = opzioni.length
+        ? "Scegli un suggerimento o scrivi..."
+        : "Scrivi una sottocategoria...";
+}
+
+categoriaSelect.addEventListener("change", aggiornaSottocategorie);
+
+// Imposta i suggerimenti iniziali
+aggiornaSottocategorie();
 
     const loginSection = document.getElementById("loginSection");
     const adminSection = document.getElementById("adminSection");
@@ -645,8 +685,11 @@ async function salvaArticolo(pubblicato) {
         immagineAttuale = articolo.immagine;
 
         document.getElementById("titolo").value = articolo.titolo || "";
+        document.getElementById("autore").value = articolo.autore || "";
+        document.getElementById("inEvidenza").checked = articolo.in_evidenza || false;
         document.getElementById("descrizione").value = articolo.descrizione || "";
         document.getElementById("categoria").value = articolo.categoria || "";
+        aggiornaSottocategorie();
         document.getElementById("sottocategoria").value = articolo.sottocategoria || "";
         document.getElementById("contenuto").value = articolo.contenuto || "";
 
