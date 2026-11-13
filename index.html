@@ -1108,35 +1108,266 @@ async function caricaArticoli() {
 
             const category = document.createElement("div");
             category.className = "category";
-            category.textContent =
-                (articolo.categoria || "Attualità") +
-                " · " + formattaData(articolo.data_pubblicazione);
 
-            const title = document.createElement("h3");
-            const link = document.createElement("a");
-            link.href = "articolo.html?id=" +
-                encodeURIComponent(articolo.id);
-            link.textContent = articolo.titolo;
-            title.appendChild(link);
-
-            const meta = document.createElement("div");
-            meta.className = "meta";
-            meta.textContent = articolo.autore ||
-                "REDAZIONE L'INTERVALLO";
-
-            item.append(category, title, meta);
-            latestNews.appendChild(item);
+<script>
+    // DATA
+    document.getElementById("date").textContent =
+        new Date().toLocaleDateString("it-IT", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
         });
 
-    } catch (error) {
-        console.error("Errore nel caricamento:", error);
-        newsGrid.textContent = "Impossibile caricare le notizie.";
-        heroMain.querySelector("h1").textContent =
-            "Impossibile caricare l'articolo in primo piano.";
+    // SUPABASE
+    const SUPABASE_URL = "https://yfxlfajooflleztnnsxl.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_mCQoLQm_2fa9cA6GpmO53A_SpSpaN87";
+
+    const supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+    // TUTTI GLI ARTICOLI
+    let tuttiGliArticoli = [];
+
+    // FORMATTA DATA
+    function formattaData(data) {
+        if (!data) return "";
+
+        return new Date(data).toLocaleDateString("it-IT", {
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        });
     }
-}
 
-caricaArticoli();
+    // CREA UNA SCHEDA
+    function creaScheda(articolo) {
+        const card = document.createElement("article");
+        card.className = "news-card";
 
+        if (articolo.immagine) {
+            const img = document.createElement("img");
+            img.src = articolo.immagine;
+            img.alt = articolo.titolo || "Immagine articolo";
+            img.loading = "lazy";
+            card.appendChild(img);
+        }
+
+        const content = document.createElement("div");
+        content.className = "news-content";
+
+        const category = document.createElement("div");
+        category.className = "category";
+        category.textContent = articolo.categoria || "Attualità";
+
+        const title = document.createElement("h3");
+        title.textContent = articolo.titolo || "Senza titolo";
+
+        const description = document.createElement("p");
+        description.textContent = articolo.descrizione || "";
+
+        const link = document.createElement("a");
+        link.href = "articolo.html?id=" + encodeURIComponent(articolo.id);
+        link.className = "read-more";
+        link.textContent = "Leggi l'articolo →";
+
+        content.append(category, title, description, link);
+        card.appendChild(content);
+
+        return card;
+    }
+
+    // MOSTRA GLI ARTICOLI
+    function mostraArticoli(articoli, ricercaAttiva = false) {
+        const newsGrid = document.getElementById("newsGrid");
+        newsGrid.replaceChildren();
+
+        const risultati = ricercaAttiva
+            ? articoli
+            : articoli.slice(0, 6);
+
+        if (risultati.length === 0) {
+            const messaggio = document.createElement("p");
+            messaggio.textContent = "Nessuna notizia trovata.";
+            newsGrid.appendChild(messaggio);
+            return;
+        }
+
+        risultati.forEach(articolo => {
+            newsGrid.appendChild(creaScheda(articolo));
+        });
+    }
+
+    // RICERCA SU TUTTI GLI ARTICOLI
+    document.getElementById("searchInput").addEventListener("input", function() {
+        const query = this.value.trim().toLowerCase();
+
+        if (!query) {
+            mostraArticoli(tuttiGliArticoli);
+            return;
+        }
+
+        const risultati = tuttiGliArticoli.filter(articolo => {
+            const testo = [
+                articolo.titolo,
+                articolo.descrizione,
+                articolo.contenuto,
+                articolo.categoria,
+                articolo.sottocategoria,
+                articolo.autore
+            ].filter(Boolean).join(" ").toLowerCase();
+
+            return testo.includes(query);
+        });
+
+        mostraArticoli(risultati, true);
+    });
+
+    // CARICA TUTTI GLI ARTICOLI
+    async function caricaArticoli() {
+        const newsGrid = document.getElementById("newsGrid");
+        const heroMain = document.getElementById("heroMain");
+        const sideNews = document.getElementById("sideNews");
+        const latestNews = document.getElementById("latestNews");
+
+        try {
+            let tutti = [];
+            let inizio = 0;
+            const dimensioneBlocco = 1000;
+
+            // Scarica gli articoli in blocchi
+            while (true) {
+                const { data, error } = await supabaseClient
+                    .from("articoli")
+                    .select("*")
+                    .eq("pubblicato", true)
+                    .order("data_pubblicazione", { ascending: false })
+                    .range(inizio, inizio + dimensioneBlocco - 1);
+
+                if (error) throw error;
+
+                tutti = tutti.concat(data || []);
+
+                if (!data || data.length < dimensioneBlocco) break;
+
+                inizio += dimensioneBlocco;
+            }
+
+            tuttiGliArticoli = tutti;
+
+            if (tuttiGliArticoli.length === 0) {
+                newsGrid.textContent = "Non ci sono ancora articoli pubblicati.";
+                sideNews.textContent = "Nessun'altra notizia disponibile.";
+                latestNews.textContent = "Non ci sono ancora ultime notizie.";
+                return;
+            }
+
+            // ARTICOLO PRINCIPALE
+            const principale =
+                tuttiGliArticoli.find(a => a.in_evidenza === true) ||
+                tuttiGliArticoli[0];
+
+            document.getElementById("heroCategory").textContent =
+                principale.categoria || "Attualità";
+
+            const heroLink = document.getElementById("heroLink");
+            heroLink.textContent = principale.titolo || "Senza titolo";
+            heroLink.href = "articolo.html?id=" +
+                encodeURIComponent(principale.id);
+
+            document.getElementById("heroDescription").textContent =
+                principale.descrizione || "";
+
+            if (principale.immagine) {
+                heroMain.style.backgroundImage =
+                    "linear-gradient(transparent, rgba(0,0,0,.85)), url('" +
+                    principale.immagine + "')";
+            }
+
+            // TRE ARTICOLI LATERALI
+            sideNews.replaceChildren();
+
+            const laterali = tuttiGliArticoli
+                .filter(a => a.id !== principale.id)
+                .slice(0, 3);
+
+            laterali.forEach(articolo => {
+                const card = document.createElement("article");
+                card.className = "side-card";
+
+                if (articolo.immagine) {
+                    const img = document.createElement("img");
+                    img.src = articolo.immagine;
+                    img.alt = articolo.titolo || "Immagine articolo";
+                    card.appendChild(img);
+                }
+
+                const content = document.createElement("div");
+
+                const category = document.createElement("div");
+                category.className = "category";
+                category.textContent = articolo.categoria || "Attualità";
+
+                const title = document.createElement("h3");
+                const link = document.createElement("a");
+                link.href = "articolo.html?id=" +
+                    encodeURIComponent(articolo.id);
+                link.textContent = articolo.titolo || "Senza titolo";
+                title.appendChild(link);
+
+                const meta = document.createElement("div");
+                meta.className = "meta";
+                meta.textContent = formattaData(articolo.data_pubblicazione);
+
+                content.append(category, title, meta);
+                card.appendChild(content);
+                sideNews.appendChild(card);
+            });
+
+            // SOLO SEI ARTICOLI INIZIALMENTE
+            mostraArticoli(tuttiGliArticoli);
+
+            // ULTIME NOTIZIE
+            latestNews.replaceChildren();
+
+            tuttiGliArticoli.slice(0, 5).forEach(articolo => {
+                const item = document.createElement("div");
+                item.className = "latest-item";
+
+                const category = document.createElement("div");
+                category.className = "category";
+                category.textContent =
+                    (articolo.categoria || "Attualità") +
+                    " · " + formattaData(articolo.data_pubblicazione);
+
+                const title = document.createElement("h3");
+                const link = document.createElement("a");
+                link.href = "articolo.html?id=" +
+                    encodeURIComponent(articolo.id);
+                link.textContent = articolo.titolo || "Senza titolo";
+                title.appendChild(link);
+
+                const meta = document.createElement("div");
+                meta.className = "meta";
+                meta.textContent =
+                    articolo.autore || "REDAZIONE L'INTERVALLO";
+
+                item.append(category, title, meta);
+                latestNews.appendChild(item);
+            });
+
+        } catch (error) {
+            console.error("Errore nel caricamento:", error);
+            newsGrid.textContent = "Impossibile caricare le notizie.";
+            heroMain.querySelector("h1").textContent =
+                "Impossibile caricare l'articolo in primo piano.";
+        }
+    }
+
+    // AVVIA IL CARICAMENTO
+    caricaArticoli();
+</script>
 </body>
 </html>
