@@ -4,313 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Le notizie di politica interna e internazionale su L'Intervallo.">
+    <meta name="description" content="Politica italiana e internazionale su L'Intervallo.">
     <title>Politica | L'INTERVALLO</title>
 
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 
-    <style>
-        :root {
-            --black: #171717;
-            --red: #c73535;
-            --gray: #777;
-            --light: #f5f4f1;
-            --border: #deded9;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: var(--light);
-            color: var(--black);
-            font-family: 'DM Sans', sans-serif;
-        }
-
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        .topbar {
-            background: var(--black);
-            color: white;
-            padding: 9px 7%;
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            letter-spacing: 1px;
-        }
-
-        header {
-            text-align: center;
-            padding: 28px 15px 24px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(42px, 8vw, 76px);
-            font-weight: 800;
-            letter-spacing: -4px;
-        }
-
-        .subtitle {
-            font-size: 11px;
-            letter-spacing: 4px;
-            color: var(--gray);
-            margin-top: 5px;
-            text-transform: uppercase;
-        }
-
-        nav {
-            display: flex;
-            justify-content: center;
-            gap: 32px;
-            padding: 17px;
-            border-bottom: 2px solid var(--black);
-            flex-wrap: wrap;
-        }
-
-        nav a {
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            transition: color .2s;
-        }
-
-        nav a:hover,
-        nav a.active {
-            color: var(--red);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 25px;
-        }
-
-        .breadcrumb {
-            font-size: 11px;
-            color: var(--gray);
-            margin-bottom: 25px;
-        }
-
-        .breadcrumb a:hover {
-            color: var(--red);
-        }
-
-        .category-header {
-            border-bottom: 2px solid var(--black);
-            padding-bottom: 25px;
-            margin-bottom: 40px;
-        }
-
-        .eyebrow {
-            color: var(--red);
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        .category-header h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(38px, 6vw, 58px);
-            line-height: 1.1;
-            margin-bottom: 12px;
-        }
-
-        .category-header p {
-            color: var(--gray);
-            font-size: 14px;
-            line-height: 1.7;
-            max-width: 650px;
-        }
-
-        /* SEZIONI POLITICA */
-
-        .politics-section {
-            margin-bottom: 65px;
-        }
-
-        .articles-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 22px;
-            gap: 15px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 15px;
-        }
-
-        .articles-info h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 29px;
-        }
-
-        .article-count {
-            color: var(--gray);
-            font-size: 12px;
-        }
-
-        .news-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-        }
-
-        .news-card {
-            background: white;
-            border: 1px solid var(--border);
-            transition: transform .2s;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .news-card:hover {
-            transform: translateY(-4px);
-        }
-
-        .news-card img {
-            width: 100%;
-            height: 210px;
-            object-fit: cover;
-        }
-
-        .news-content {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
-
-        .category {
-            color: var(--red);
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-        }
-
-        .news-content h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 21px;
-            line-height: 1.3;
-            margin-bottom: 12px;
-        }
-
-        .news-content p {
-            color: var(--gray);
-            font-size: 13px;
-            line-height: 1.7;
-        }
-
-        .meta {
-            color: var(--gray);
-            font-size: 10px;
-            margin-top: 15px;
-        }
-
-        .read-more {
-            display: inline-block;
-            margin-top: auto;
-            padding-top: 20px;
-            font-size: 11px;
-            font-weight: 800;
-            color: var(--red);
-            text-transform: uppercase;
-        }
-
-        .read-more:hover {
-            color: #921f1f;
-        }
-
-        /* VEDI TUTTO */
-
-        .see-all-container {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 25px;
-        }
-
-        .see-all {
-            display: inline-block;
-            background: var(--black);
-            color: white;
-            padding: 13px 22px;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: background .2s;
-        }
-
-        .see-all:hover {
-            background: var(--red);
-        }
-
-        footer {
-            background: #111;
-            color: white;
-            padding: 35px 7%;
-            text-align: center;
-            margin-top: 50px;
-        }
-
-        footer .logo {
-            font-size: 40px;
-        }
-
-        footer p {
-            color: #999;
-            font-size: 11px;
-            margin-top: 12px;
-        }
-
-        @media(max-width: 850px) {
-            .news-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media(max-width: 600px) {
-            .news-grid {
-                grid-template-columns: 1fr;
-            }
-
-            nav {
-                gap: 15px;
-            }
-
-            .topbar {
-                font-size: 9px;
-            }
-
-            .container {
-                padding: 0 17px;
-            }
-
-            .articles-info {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-        }
-    </style>
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+    <link rel="stylesheet" href="css/letteratura.css">
 </head>
 
 <body>
 
     <div class="topbar">
-        <span>IL GIORNALE DIGITALE INDIPENDENTE</span>
+        <span>GIORNALINO STUDENTESCO</span>
         <span id="date"></span>
     </div>
 
@@ -328,58 +34,37 @@
         <a href="cultura.html">Cultura</a>
     </nav>
 
+    <div class="culture-menu">
+        <a href="politica.html" class="active">Tutte</a>
+        <a href="politica-interna.html">Politica interna</a>
+        <a href="politica-internazionale.html">Politica internazionale</a>
+    </div>
+
     <main class="container">
 
         <div class="breadcrumb">
-            <a href="index.html">Home</a> / Politica
+            <a href="index.html">Home</a> /
+            Politica
         </div>
 
         <section class="category-header">
-            <div class="eyebrow">LE NOSTRE CATEGORIE</div>
-            <h1>Politica interna e internazionale</h1>
+            <div class="eyebrow">ATTUALITÀ · POLITICA</div>
+            <h1>Politica</h1>
             <p>
-                Istituzioni, decisioni pubbliche, governi e partecipazione
-                democratica. Seguiamo la politica italiana e internazionale
-                per comprendere le decisioni che influenzano il nostro presente.
+                Istituzioni, decisioni e scenari politici.
+                Un approfondimento sulla politica italiana
+                e internazionale e sulle questioni che
+                influenzano la società.
             </p>
         </section>
 
-        <!-- POLITICA INTERNA -->
-
-        <section class="politics-section">
-
+        <section>
             <div class="articles-info">
-                <h2>Politica interna</h2>
-                <span class="article-count" id="internalCount"></span>
+                <h2>Tutti gli articoli</h2>
+                <span class="article-count" id="articleCount">Caricamento...</span>
             </div>
 
-            <div class="news-grid" id="internalGrid"></div>
-
-            <div class="see-all-container">
-                <a href="politica-interna.html" class="see-all">
-                    Vedi tutto →
-                </a>
-            </div>
-
-        </section>
-
-        <!-- POLITICA INTERNAZIONALE -->
-
-        <section class="politics-section">
-
-            <div class="articles-info">
-                <h2>Politica internazionale</h2>
-                <span class="article-count" id="internationalCount"></span>
-            </div>
-
-            <div class="news-grid" id="internationalGrid"></div>
-
-            <div class="see-all-container">
-                <a href="politica-internazionale.html" class="see-all">
-                    Vedi tutto →
-                </a>
-            </div>
-
+            <div class="news-grid" id="newsGrid"></div>
         </section>
 
     </main>
@@ -392,175 +77,116 @@
     </footer>
 
     <script>
+        const SUPABASE_URL = "https://yfxlfajooflleztnnsxl.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_mCQoLQm_2fa9cA6GpmO53A_SpSpaN87";
 
-// DATA AUTOMATICA
+        const supabaseClient = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
 
-const today = new Date();
+        document.getElementById("date").textContent =
+            new Date().toLocaleDateString("it-IT", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            });
 
-document.getElementById("date").textContent =
-    today.toLocaleDateString("it-IT", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-    });
+        function formattaData(data) {
+            if (!data) return "";
 
-
-// COLLEGAMENTO A SUPABASE
-
-const SUPABASE_URL = "https://yfxlfajooflleztnnsxl.supabase.co";
-
-// Usa la stessa publishable key già presente in index.html
-const SUPABASE_KEY = "sb_publishable_mCQoLQm_2fa9cA6GpmO53A_SpSpaN87";
-
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);
-
-
-// FORMATTAZIONE DATA
-
-function formattaData(data) {
-    if (!data) return "";
-
-    return new Date(data).toLocaleDateString("it-IT", {
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-    });
-}
-
-
-// CREAZIONE SCHEDE
-
-function renderArticles(articles, gridId, countId, categoryName) {
-
-    const grid = document.getElementById(gridId);
-    const count = document.getElementById(countId);
-
-    grid.replaceChildren();
-
-    count.textContent =
-        articles.length +
-        (articles.length === 1 ? " articolo" : " articoli");
-
-    if (articles.length === 0) {
-        const message = document.createElement("div");
-
-        message.style.cssText =
-            "background:white;padding:35px;text-align:center;color:#777;grid-column:1/-1;";
-
-        message.textContent =
-            "Non ci sono ancora articoli in questa sezione.";
-
-        grid.appendChild(message);
-        return;
-    }
-
-    articles.slice(0, 3).forEach(article => {
-
-        const card = document.createElement("article");
-        card.className = "news-card";
-
-        if (article.immagine) {
-            const image = document.createElement("img");
-            image.src = article.immagine;
-            image.alt = article.titolo || "Immagine articolo";
-            image.loading = "lazy";
-            card.appendChild(image);
+            return new Date(data).toLocaleDateString("it-IT", {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            });
         }
 
-        const content = document.createElement("div");
-        content.className = "news-content";
+        function creaScheda(articolo) {
+            const card = document.createElement("article");
+            card.className = "news-card";
 
-        const category = document.createElement("div");
-        category.className = "category";
-        category.textContent = categoryName;
+            if (articolo.immagine) {
+                const image = document.createElement("img");
+                image.src = articolo.immagine;
+                image.alt = articolo.titolo || "Immagine articolo";
+                image.loading = "lazy";
+                card.appendChild(image);
+            }
 
-        const title = document.createElement("h3");
-        title.textContent = article.titolo;
+            const content = document.createElement("div");
+            content.className = "news-content";
 
-        const description = document.createElement("p");
-        description.textContent = article.descrizione || "";
+            const category = document.createElement("div");
+            category.className = "category";
+            category.textContent = articolo.sottocategoria || "Politica";
 
-        const meta = document.createElement("div");
-        meta.className = "meta";
+            const title = document.createElement("h3");
+            title.textContent = articolo.titolo || "Senza titolo";
 
-        meta.textContent =
-            formattaData(article.data_pubblicazione) +
-            (article.autore ? " · " + article.autore : "");
+            const description = document.createElement("p");
+            description.textContent = articolo.descrizione || "";
 
-        const link = document.createElement("a");
-        link.className = "read-more";
-        link.href = "articolo.html?id=" + article.id;
-        link.textContent = "Leggi l'articolo →";
+            const meta = document.createElement("div");
+            meta.className = "meta";
+            meta.textContent = formattaData(articolo.data_pubblicazione);
 
-        content.append(category, title, description, meta, link);
-        card.appendChild(content);
+            if (articolo.autore) {
+                meta.textContent += " · " + articolo.autore;
+            }
 
-        grid.appendChild(card);
-    });
-}
+            const link = document.createElement("a");
+            link.className = "read-more";
+            link.href = "articolo.html?id=" + encodeURIComponent(articolo.id);
+            link.textContent = "Leggi l'articolo →";
 
+            content.append(category, title, description, meta, link);
+            card.appendChild(content);
 
-async function caricaPolitica() {
+            return card;
+        }
 
-    const { data: articoli, error } = await supabaseClient
-        .from("articoli")
-        .select("*")
-        .eq("pubblicato", true)
-        .eq("categoria", "Politica")
-        .order("data_pubblicazione", { ascending: false });
+        async function caricaPolitica() {
+            const newsGrid = document.getElementById("newsGrid");
+            const articleCount = document.getElementById("articleCount");
 
-    if (error) {
-        console.error(error);
-        alert("Errore: " + error.message);
-        return;
-    }
+            try {
+                const { data: articoli, error } = await supabaseClient
+                    .from("articoli")
+                    .select("*")
+                    .eq("pubblicato", true)
+                    .eq("categoria", "Politica")
+                    .order("data_pubblicazione", { ascending: false });
 
-    function normalizza(testo) {
-        return (testo || "")
-            .trim()
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "");
-    }
+                if (error) throw error;
 
-    // SOLO POLITICA INTERNA
-    const internalArticles = articoli.filter(article => {
-        const sottocategoria = normalizza(article.sottocategoria);
+                newsGrid.replaceChildren();
 
-        return sottocategoria.includes("interna") &&
-               !sottocategoria.includes("internazionale");
-    });
+                articleCount.textContent =
+                    articoli.length +
+                    (articoli.length === 1 ? " articolo" : " articoli");
 
-    // SOLO POLITICA INTERNAZIONALE
-    const internationalArticles = articoli.filter(article => {
-        const sottocategoria = normalizza(article.sottocategoria);
+                if (articoli.length === 0) {
+                    const empty = document.createElement("div");
+                    empty.className = "empty-message";
+                    empty.textContent = "Non ci sono ancora articoli in questa sezione.";
+                    newsGrid.appendChild(empty);
+                    return;
+                }
 
-        return sottocategoria.includes("internazionale");
-    });
+                articoli.forEach(articolo => {
+                    newsGrid.appendChild(creaScheda(articolo));
+                });
 
-    // ANTEPRIME INDIPENDENTI
-    renderArticles(
-        internalArticles,
-        "internalGrid",
-        "internalCount",
-        "Politica interna"
-    );
+            } catch (error) {
+                console.error("Errore Supabase:", error);
+                newsGrid.textContent = "Impossibile caricare gli articoli.";
+                articleCount.textContent = "";
+            }
+        }
 
-    renderArticles(
-        internationalArticles,
-        "internationalGrid",
-        "internationalCount",
-        "Politica internazionale"
-    );
-}
-
-caricaPolitica();
-
-
+        caricaPolitica();
     </script>
 
 </body>
