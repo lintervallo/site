@@ -65,138 +65,119 @@
     <p>L'INTERVALLO — Il giornalino degli studenti</p>
   </footer>
 
-  <script>
-    const SUPABASE_URL = "https://yfxlfajooflleztnnsxl.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_mCQoLQm_2fa9cA6GpmO53A_SpSpaN87";
+ <script>
+        const SUPABASE_URL = "https://yfxlfajooflleztnnsxl.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_mCQoLQm_2fa9cA6GpmO53A_SpSpaN87";
 
-    const supabaseClient = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
+        const supabaseClient = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
 
-    // Data automatica
-    document.getElementById("date").textContent =
-      new Date().toLocaleDateString("it-IT", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-      });
+        document.getElementById("date").textContent =
+            new Date().toLocaleDateString("it-IT", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            });
 
-    // Formattazione data articolo
-    function formattaData(data) {
-      if (!data) return "";
+        function formattaData(data) {
+            if (!data) return "";
 
-      return new Date(data).toLocaleDateString("it-IT", {
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-      });
-    }
-
-    // Creazione scheda articolo
-    function creaScheda(articolo) {
-      const card = document.createElement("article");
-      card.className = "news-card";
-
-      const link = document.createElement("a");
-      link.href = "articolo.html?id=" + encodeURIComponent(articolo.id);
-      link.className = "news-link";
-
-      if (articolo.immagine) {
-        const img = document.createElement("img");
-        img.src = articolo.immagine;
-        img.alt = articolo.titolo || "Immagine articolo";
-        img.className = "news-image";
-        link.appendChild(img);
-      }
-
-      const content = document.createElement("div");
-      content.className = "news-content";
-
-      const category = document.createElement("span");
-      category.className = "news-category";
-      category.textContent = articolo.sottocategoria || "Attualità";
-
-      const title = document.createElement("h2");
-      title.textContent = articolo.titolo;
-
-      const description = document.createElement("p");
-      description.textContent = articolo.descrizione || "";
-
-      const meta = document.createElement("div");
-      meta.className = "news-meta";
-
-      const date = document.createElement("span");
-      date.textContent = formattaData(articolo.data_pubblicazione);
-
-      const author = document.createElement("span");
-      author.textContent = articolo.autore || "";
-
-      meta.appendChild(date);
-      meta.appendChild(author);
-
-      content.appendChild(category);
-      content.appendChild(title);
-      content.appendChild(description);
-      content.appendChild(meta);
-
-      link.appendChild(content);
-      card.appendChild(link);
-
-      return card;
-    }
-
-    // Caricamento articoli
-    async function caricaAttualita() {
-      const newsGrid = document.getElementById("newsGrid");
-      const articleCount = document.getElementById("articleCount");
-
-      try {
-        const { data: articoli, error } = await supabaseClient
-          .from("articoli")
-          .select("*")
-          .eq("pubblicato", true)
-          .eq("categoria", "Attualità")
-          .order("data_pubblicazione", { ascending: false });
-
-        if (error) throw error;
-
-        newsGrid.innerHTML = "";
-
-        articleCount.textContent =
-          articoli.length === 1
-            ? "1 articolo"
-            : articoli.length + " articoli";
-
-        if (!articoli || articoli.length === 0) {
-          newsGrid.innerHTML = `
-            <div class="empty-message">
-              <p>Non ci sono ancora articoli in questa sezione.</p>
-            </div>
-          `;
-          return;
+            return new Date(data).toLocaleDateString("it-IT", {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            });
         }
 
-        articoli.forEach(articolo => {
-          newsGrid.appendChild(creaScheda(articolo));
-        });
+        function creaScheda(articolo) {
+            const card = document.createElement("article");
+            card.className = "news-card";
 
-      } catch (error) {
-        console.error("Errore nel caricamento degli articoli:", error);
+            if (articolo.immagine) {
+                const image = document.createElement("img");
+                image.src = articolo.immagine;
+                image.alt = articolo.titolo || "Immagine articolo";
+                image.loading = "lazy";
+                card.appendChild(image);
+            }
 
-        newsGrid.innerHTML = `
-          <div class="empty-message">
-            <p>Si è verificato un errore nel caricamento degli articoli.</p>
-          </div>
-        `;
+            const content = document.createElement("div");
+            content.className = "news-content";
 
-        articleCount.textContent = "Errore";
-      }
-    }
+            const category = document.createElement("div");
+            category.className = "category";
+            category.textContent = articolo.sottocategoria || "Attualità";
 
-    caricaAttualita();
-  </script>
+            const title = document.createElement("h3");
+            title.textContent = articolo.titolo || "Senza titolo";
+
+            const description = document.createElement("p");
+            description.textContent = articolo.descrizione || "";
+
+            const meta = document.createElement("div");
+            meta.className = "meta";
+            meta.textContent = formattaData(articolo.data_pubblicazione);
+
+            if (articolo.autore) {
+                meta.textContent += " · " + articolo.autore;
+            }
+
+            const link = document.createElement("a");
+            link.className = "read-more";
+            link.href = "articolo.html?id=" + encodeURIComponent(articolo.id);
+            link.textContent = "Leggi l'articolo →";
+
+            content.append(category, title, description, meta, link);
+            card.appendChild(content);
+
+            return card;
+        }
+
+        async function caricaAttualità() {
+            const newsGrid = document.getElementById("newsGrid");
+            const articleCount = document.getElementById("articleCount");
+
+            try {
+                const { data: articoli, error } = await supabaseClient
+                    .from("articoli")
+                    .select("*")
+                    .eq("pubblicato", true)
+                    .eq("categoria", "Attualità")
+                    .order("data_pubblicazione", { ascending: false });
+
+                if (error) throw error;
+
+                newsGrid.replaceChildren();
+
+                articleCount.textContent =
+                    articoli.length +
+                    (articoli.length === 1 ? " articolo" : " articoli");
+
+                if (articoli.length === 0) {
+                    const empty = document.createElement("div");
+                    empty.className = "empty-message";
+                    empty.textContent = "Non ci sono ancora articoli in questa sezione.";
+                    newsGrid.appendChild(empty);
+                    return;
+                }
+
+                articoli.forEach(articolo => {
+                    newsGrid.appendChild(creaScheda(articolo));
+                });
+
+            } catch (error) {
+                console.error("Errore Supabase:", error);
+                newsGrid.textContent = "Impossibile caricare gli articoli.";
+                articleCount.textContent = "";
+            }
+        }
+
+        caricaAttualità();
+    </script>
+
 
 </body>
 </html>
